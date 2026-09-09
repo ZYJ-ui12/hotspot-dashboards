@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>维多利亚的秘密 × 全平台热点借势看板 · 2026-09-09</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+  :root{
+    --navy:#201A24; --navy2:#120E15; --cream:#F8F4F3; --card:#FFFFFF;
+    --gold:#D96C8A; --gold-deep:#B24E6E; --green:#3E6B4F; --red:#B03A2E;
+    --text:#1A1B1C; --sub:#6B7280; --line:#EADFE2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--text);
+    font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+    font-weight:400;
+    line-height:1.6;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px 48px;}
+
+  /* ===== 头部 ===== */
+  header{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+    color:#F5F1E6;padding:30px 0 26px;border-bottom:3px solid var(--gold);
+  }
+  .h-wrap{max-width:1060px;margin:0 auto;padding:0 20px;}
+  .brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .brand-en{
+    font-family:'Noto Serif SC',serif;font-size:26px;font-weight:700;
+    letter-spacing:6px;color:#F5F1E6;
+  }
+  .brand-cn{font-size:15px;letter-spacing:3px;color:#D9CFB4;}
+  .brand-cn b{color:var(--gold);font-weight:500;}
+  .meta-line{
+    margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    font-size:12.5px;color:#B9C0D4;
+  }
+  .meta-line .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .tagline{
+    margin-top:14px;font-family:'Noto Serif SC',serif;font-size:17px;color:#F5F1E6;
+    letter-spacing:2px;
+  }
+  .tagline em{font-style:normal;color:var(--gold);}
+  .assets{
+    margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .asset{
+    font-size:11px;border:1px solid rgba(245,241,230,.35);color:#D9CFB4;
+    border-radius:999px;padding:2px 10px;letter-spacing:.5px;
+  }
+  .asset.on{border-color:var(--gold);color:var(--gold);}
+
+  /* ===== 章节标题 ===== */
+  .sec-title{
+    margin:34px 0 14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .sec-title h2{
+    font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:var(--navy);
+  }
+  .sec-title span{font-size:12px;color:var(--sub);}
+
+  /* ===== TOP3 ===== */
+  .top3{display:flex;gap:14px;flex-wrap:wrap;}
+  .t3{
+    flex:1 1 280px;min-width:0;background:var(--card);border:1px solid var(--line);
+    border-top:3px solid var(--gold);border-radius:10px;padding:16px 16px 14px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .t3 .no{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--gold-deep);letter-spacing:1px;}
+  .t3 h3{font-size:16px;font-weight:600;color:var(--navy);}
+  .t3 .src{font-size:11.5px;color:var(--sub);}
+  .t3 .tact{font-size:12.5px;color:var(--text);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;}
+  .t3 .tact b{color:var(--gold-deep);font-weight:600;}
+
+  /* ===== 看板控制 ===== */
+  .controls{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;
+  }
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .tab{
+    font-size:13px;padding:6px 18px;border-radius:8px;border:1px solid var(--line);
+    background:#FAF8F2;color:var(--navy);cursor:pointer;transition:all .15s;
+    font-family:'Noto Sans SC',sans-serif;
+  }
+  .tab.active{background:var(--navy);color:#F5F1E6;border-color:var(--navy);}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{
+    font-size:11.5px;padding:3px 11px;border-radius:999px;border:1px solid var(--line);
+    background:#FAF8F2;color:var(--sub);cursor:pointer;transition:all .15s;
+  }
+  .chip.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+  .count-hint{font-size:11.5px;color:var(--sub);}
+
+  /* ===== 热点卡片 ===== */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;margin-bottom:12px;
+  }
+  .card-head{display:flex;gap:12px;align-items:flex-start;}
+  .rank{
+    font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--navy);
+    line-height:1;min-width:34px;padding-top:2px;
+  }
+  .card-title{font-size:15.5px;font-weight:600;color:var(--navy);line-height:1.4;}
+  .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;}
+  .chip-cat{
+    font-size:11px;background:rgba(30,42,68,.08);color:var(--navy);
+    border-radius:999px;padding:1px 9px;
+  }
+  .heat{
+    font-size:11px;background:rgba(217,108,138,.14);color:var(--gold-deep);
+    border-radius:999px;padding:1px 9px;font-weight:500;
+  }
+  .heat.na{background:rgba(107,114,128,.12);color:var(--sub);}
+  .sum{font-size:12.5px;color:var(--sub);margin-top:9px;line-height:1.65;}
+  .angle{
+    margin-top:9px;background:#FBF9F3;border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--text);
+    line-height:1.65;
+  }
+  .angle b{color:var(--gold-deep);font-weight:600;}
+  .angle.guard{border-left-color:var(--red);background:#FBF6F4;}
+  .angle.guard b{color:var(--red);}
+
+  /* ===== 底部 ===== */
+  footer{
+    margin-top:34px;border-top:1px solid var(--line);padding-top:16px;
+    font-size:11.5px;color:var(--sub);line-height:1.8;
+  }
+  footer b{color:var(--navy);font-weight:600;}
+  .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:13px;}
+
+  @media (max-width:520px){
+    .brand-en{font-size:21px;letter-spacing:4px;}
+    .tagline{font-size:15px;}
+    .sec-title h2{font-size:18px;}
+    .card-title{font-size:14.5px;}
+    .rank{font-size:19px;min-width:28px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-wrap">
+    <div class="brand-line">
+      <span class="brand-en">VICTORIA'S SECRET</span>
+      <span class="brand-cn">维多利亚的秘密 · <b>热点借势看板</b></span>
+    </div>
+    <div class="meta-line">
+      <span>2026年9月9日 星期三</span><span class="dot"></span>
+      <span>数据源：抖音热榜 / 小红书热搜 / 微博热搜</span><span class="dot"></span>
+      <span>每日 10:00 自动更新</span>
+    </div>
+    <div class="tagline">性感自信 · 闪耀如你 —— 品牌 × 全平台每日热点结合</div>
+    <div class="assets">
+      <span class="asset">睡衣：光泽感面料 · 高级感垂坠 · 杨幂同款</span>
+      <span class="asset">水钻内衣（含 OG 水钻系列）：闪钻肩带 · 薄杯 · 聚拢</span>
+      <span class="asset">三角杯（含 ACE 系列）：字母 logo 肩带 · 蕾丝 · 无钢圈</span>
+      <span class="asset on">场景：居家 · 约会 · 旅行 · 睡眠</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="sec-title">
+    <h2>今日品牌借势 TOP3</h2>
+    <span>仅选取与品牌场景强相关的话题，每条聚焦单一产品线</span>
+  </section>
+  <section class="top3" id="top3"></section>
+
+  <section class="sec-title">
+    <h2>分平台热点 × 借势建议</h2>
+    <span>完整收录当日精选条目：与品牌强相关的话题给出借势角度，弱相关话题客观标注「不推荐借势」及理由；每条建议聚焦单一产品线</span>
+  </section>
+
+  <div class="controls">
+    <div class="tabs" id="tabs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="count-hint" id="count"></div>
+  </div>
+
+  <section id="list"></section>
+
+  <footer>
+    <b>数据说明</b>：榜单数据源——抖音热榜（douyin-hot-hub 镜像 github.heygears.com/lonnyzhang423/douyin-hot-hub、巨量算数 trendinsight.oceanengine.com）、微博热搜（weibo.zhaoyizhe.com、weibotop.cn、5w8y.cn）、小红书热搜（tool.caizhichao.cn/hot-rank.html），抓取时间 2026-09-09 上午；热度值为各源参考值，随榜单实时波动，部分条目未展示数值。看板为运营视角精选：强相关话题给借势角度，弱相关话题客观标注「不推荐借势」及理由，非完整榜单。<br>
+    <b>借势建议</b>：依据品牌产品线（睡衣：光泽感面料/高级感垂坠/杨幂同款；水钻内衣：闪钻肩带/薄杯/聚拢；三角杯：字母 logo 肩带/蕾丝/无钢圈）及卖点按话题分类模板生成；每条建议聚焦单一产品线，不堆叠产品；「不推荐借势」类条目为弱相关话题，不建议强行蹭热点；「克制建议」类条目为敏感或社会事件，建议不借势或经合规审批后低调执行。<br>
+    <b>更新机制</b>：本看板每日 10:00 自动重跑生成当日版本，数据与建议随当日热榜更新。
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var DY = [
+    {rank:1, title:"送你一口秋天味道", cat:"生活方式", heat:"1166万",
+     sum:"全国降温带火“入秋”话题，秋天第一件、第一景的氛围内容刷屏，居家氛围感讨论升温。",
+     angle:"「入秋第一件居家战袍」：光泽感睡衣（杨幂同款 · 高级感垂坠 · 光泽感面料），夜晚灯光下氛围感短视频（开箱→上身→夜景光泽），小红书同步「入秋居家仪式感」图文，联动生活方式/家居 KOL。聚焦睡衣单品，不叠加其他产品。"},
+    {rank:2, title:"跑步可以治愈一切", cat:"生活方式", heat:"1166万",
+     sum:"秋季跑步热潮，用户分享晨跑夜跑的“治愈时刻”，运动穿搭与装备讨论走高。",
+     no:true, angle:"运动场景属运动内衣品类战场，与品牌睡衣/内衣主线弱相关，硬绑易显蹭热度；建议不借势。"},
+    {rank:3, title:"平陆运河抢先看", cat:"社会事件", heat:"1153万",
+     sum:"平陆运河将于 9 月 16 日建成通航，“超级工程”航拍引发广泛关注。",
+     guard:true, angle:"大国工程类公共议题，与品牌品类无关联，不建议借势；如需参与仅限公益口径并报合规。"},
+    {rank:4, title:"初代神图全靠手抖出片", cat:"时尚穿搭", heat:"1140万",
+     sum:"复古胶片感、手抖出片的老照片质感拍摄手法流行，用户追求有故事感的画面。",
+     no:true, angle:"话题核心是拍摄手法，与产品卖点无强关联；复古审美若要承接需专门企划内容，不适合热点快反，建议不借势。"},
+    {rank:5, title:"秋一下才对味", cat:"生活方式", heat:"1053万",
+     sum:"“秋天要有仪式感”内容升温，用户晒秋日第一件、第一拍。",
+     angle:"与「送你一口秋天味道」合并执行「秋天第一套睡衣」：光泽感睡衣两件套 + 睡袍，香槟金/燕麦/雾粉经典色合集，抖音短视频 + 小红书图文，联动生活方式达人。聚焦睡衣单品。"},
+    {rank:6, title:"写给老师的教师节贺卡", cat:"情感话题", heat:"1052万",
+     sum:"9 月 10 日教师节临近，手写贺卡与感恩老师的内容升温。",
+     no:true, angle:"教师节感恩场景与内衣品类不适配，借势易引发反感；礼赠场景可另行企划（闺蜜互赠），不建议绑教师节热点。"},
+    {rank:7, title:"皇马2:1击败国米", cat:"体育赛事", heat:"",
+     sum:"欧冠焦点战，皇马主场 2:1 击败国米，姆巴佩破门，球迷热议。",
+     no:true, angle:"足球赛事受众与品牌目标用户错位，无产品关联点；建议不借势。"},
+    {rank:9, title:"国庆出游日常不费力穿搭", cat:"时尚穿搭", heat:"",
+     sum:"国庆假期临近，“不费力好看”的出游穿搭话题走热，用户求出行清单。",
+     no:true, angle:"话题为外穿穿搭向，与内衣/睡衣无直接关联；旅行场景已由「旅行拍照出片」等话题承接，本话题不重复借势。"},
+    {rank:11, title:"香港首任特首董建华逝世", cat:"社会事件", heat:"",
+     sum:"香港首任特首董建华逝世，享年 89 岁，各界表达缅怀。",
+     guard:true, angle:"敏感人物事件：尊重逝者，当日停止一切借势营销动作，不参与热点讨论，按企业公关纪律执行。"},
+    {rank:12, title:"江西遂川泥石流已致12人遇难", cat:"社会事件", heat:"",
+     sum:"江西遂川泥石流灾害已致 12 人遇难，救援工作持续进行。",
+     guard:true, angle:"灾害事件：严禁借灾营销；如需表态以低调公益/祈福口径，经合规审批后执行。"},
+    {rank:13, title:"白鹿穿燕麦系小跳一下", cat:"娱乐八卦", heat:"",
+     sum:"白鹿燕麦色系造型随拍刷屏，温柔高级感获赞，多平台发酵。",
+     no:true, angle:"无官方合作关系的明星话题，借势有肖像与舆论风险；杨幂同款系品牌自有卖点，无需借外部明星。"},
+    {rank:15, title:"周冬雨马思纯花少再合体", cat:"影视综艺", heat:"",
+     sum:"《花少》新一季嘉宾合体话题，旅行综艺带动旅行穿搭讨论。",
+     no:true, angle:"综艺内容与内衣品类无强关联、无官方植入，借势转化弱；建议不借势。"},
+    {rank:17, title:"莱巴金娜称郑钦文是危险对手", cat:"体育赛事", heat:"",
+     sum:"美网女单，郑钦文逆转晋级八强，莱巴金娜称其为“危险对手”，网球热度走高。",
+     no:true, angle:"运动员无代言关系，消费体育热点易被视为蹭热度；品牌无运动线强背书，建议不借势。"},
+    {rank:36, title:"我选择火锅作为入秋仪式感", cat:"美食探店", heat:"",
+     sum:"入秋第一顿火锅话题升温，聚餐场景内容走热。",
+     no:true, angle:"美食场景与产品无关联，硬绑定生硬；入秋仪式感已由居家睡衣话题承接，本话题不借势。"},
+    {rank:42, title:"我有恋秋综合症", cat:"情感话题", heat:"",
+     sum:"“恋秋综合症”成网络热词，用户分享对秋日的浪漫情结。",
+     angle:"「恋秋氛围感居家」：光泽感睡衣 + 暖光 + 香薰，情感向文案「把秋天穿在身上」，小红书图文 + 抖音氛围视频，联动情感/生活方式 KOL。聚焦睡衣单品。"}
+  ];
+  var XHS = [
+    {rank:1, title:"用万能旅行拍照姿势美美出片", cat:"生活方式", heat:"947.5万",
+     sum:"万能旅行拍照姿势教程刷屏，用户追求“怎么拍都好看”的旅行出片。",
+     angle:"「旅行战袍出片」：光泽感睡袍缎面光泽自然光下自带氛围感，「旅行拍照穿什么」指南，联动旅行摄影博主，主打“睡袍上身怎么拍都好看”。聚焦睡袍单品。"},
+    {rank:2, title:"耗时三年拍下古诗词里的中国", cat:"生活方式", heat:"934.8万",
+     sum:"博主耗时三年拍摄古诗词意境的中国风光，文化内容获高赞收藏。",
+     no:true, angle:"文化类内容与内衣/睡衣品类无产品关联，借势生硬；建议不借势。"},
+    {rank:3, title:"我拍到了海鸥雨", cat:"生活方式", heat:"903.2万",
+     sum:"用户拍到海鸥群飞的“海鸥雨”奇观，治愈系内容走热。",
+     no:true, angle:"自然景观治愈内容与产品场景弱相关，硬绑易显蹭热度；建议不借势。"},
+    {rank:4, title:"超日常美食教程速来get", cat:"美食探店", heat:"886万",
+     sum:"家常快手菜教程热度高，用户关注“日常幸福感”。",
+     no:true, angle:"下厨场景与内衣品类无关联；居家幸福感场景已由睡衣话题承接，本话题不借势。"},
+    {rank:5, title:"定格这一刻的日照金山", cat:"生活方式", heat:"871.1万",
+     sum:"日照金山摄影内容刷屏，户外旅行热情高涨。",
+     no:true, angle:"户外风光话题与内衣/睡衣场景弱相关；旅行场景已由「旅行拍照出片」承接，不重复借势。"},
+    {rank:6, title:"你可以永远相信赛里木湖的美景", cat:"生活方式", heat:"783.1万",
+     sum:"赛里木湖风光刷屏，“有一种蓝叫赛里木湖蓝”。",
+     no:true, angle:"同上：风景类内容与产品无强关联，建议不借势。"},
+    {rank:8, title:"我的家庭旅行更像是打副本", cat:"生活方式", heat:"737.1万",
+     sum:"家庭旅行“兵荒马乱”的真实吐槽走红，亲子出行话题升温。",
+     no:true, angle:"品牌无亲子/家庭产品线，场景错位；建议不借势。"},
+    {rank:9, title:"原来古诗词里的河南真的存在", cat:"生活方式", heat:"727.8万",
+     sum:"古诗词意境与现实风光对照内容，文化旅行热度延续。",
+     no:true, angle:"同「耗时三年拍下古诗词」评估口径：文化内容与产品无关联，不借势。"},
+    {rank:12, title:"海边日落赴一场温柔约会", cat:"情感话题", heat:"689.4万",
+     sum:"海边日落约会氛围感内容，情侣约会场景话题走热。",
+     angle:"「约会战袍」：水钻内衣（闪钻肩带 · 薄杯 · 聚拢），「赴约的精致内搭」约会穿搭小心机，小红书图文 + 抖音氛围短视频，联动情侣/时尚 KOL。聚焦水钻内衣单品。"},
+    {rank:14, title:"我创造了新型遛狗法", cat:"生活方式", heat:"231.8万",
+     sum:"创意遛狗方式走红，宠物与生活趣味内容。",
+     no:true, angle:"宠物场景与产品无关联；建议不借势。"},
+    {rank:18, title:"珠圆玉润妆完全是淡颜天菜", cat:"时尚穿搭", heat:"193.8万",
+     sum:"“珠圆玉润妆”妆容趋势流行，淡颜系高级感审美受追捧。",
+     no:true, angle:"妆容话题与内衣品类关联弱，“光泽呼应”叙事牵强；建议不借势。"},
+    {rank:19, title:"碎钻美甲指尖藏着细碎星光", cat:"时尚穿搭", heat:"184.5万",
+     sum:"碎钻美甲风流行，精致细节审美兴起。",
+     angle:"「碎钻 × 水钻」：碎钻美甲与水钻内衣（闪钻肩带）同框的“细节控闪耀美学”，小红书图文，联动美甲/时尚博主跨界内容。聚焦水钻内衣单品。"},
+    {rank:20, title:"我来当旅行中的颜色猎手", cat:"生活方式", heat:"175.7万",
+     sum:"旅行中捕捉色彩搭配的灵感内容，配色审美讨论。",
+     no:true, angle:"配色话题与内衣产品关联弱；如需做配色内容应专门企划，不借热点快反。"}
+  ];
+  var WB = [
+    {rank:2, title:"这段话杀死了内耗型人格", cat:"情感话题", heat:"",
+     sum:"治愈内耗的金句广泛传播，“允许一切发生”式情绪价值内容获共鸣。",
+     no:true, angle:"情绪价值话题泛化，与产品场景弱相关，借势转化低；悦己叙事可做官微常设内容，不建议借热点快反。"},
+    {rank:3, title:"这样的吃播该全面叫停了", cat:"社会事件", heat:"",
+     sum:"大胃王/催吐式吃播引发监管关注，官媒发声整治。",
+     guard:true, angle:"社会监管话题，品牌不宜卷入；不借势。"},
+    {rank:4, title:"平陆运河9月16日建成通航", cat:"社会事件", heat:"",
+     sum:"平陆运河定于 9 月 16 日建成通航，世纪工程进展引关注。",
+     guard:true, angle:"国家工程类公共议题，与品类无关联，不建议借势；如需发声以公益口径并报合规。"},
+    {rank:9, title:"金球奖", cat:"体育赛事", heat:"",
+     sum:"金球奖 30 人候选名单公布，哈兰德、贝林厄姆等在列，足坛年度盛事。",
+     no:true, angle:"足球受众与品牌目标用户错位，无产品关联点；建议不借势。"},
+    {rank:11, title:"医生眼里让大脑休息最好的方法", cat:"知识科普", heat:"",
+     sum:"医生科普真正让大脑休息的方式，睡眠健康知识获关注。",
+     angle:"「睡得好才是真休息」：光泽感面料睡衣（高级感垂坠）× 睡眠质量科普，「选对睡衣助眠」内容，联动健康/睡眠 KOL，专业度 + 产品卖点结合。聚焦睡衣单品。"},
+    {rank:12, title:"双休不一定是休周六周日", cat:"社会事件", heat:"",
+     sum:"弹性休假话题引发职场人共鸣，讨论“休假自由”与居家时间。",
+     angle:"「随时随地舒适」：三角杯（字母 logo 肩带 · 蕾丝 · 无钢圈）日常舒适，“从办公室到沙发都舒服”，联动职场 KOL。聚焦三角杯单品。"},
+    {rank:15, title:"印度21岁女运动员因外貌走红", cat:"体育赛事", heat:"",
+     sum:"印度 21 岁女运动员因外貌走红网络，引发关注与讨论。",
+     guard:true, angle:"外貌议题敏感，尊重个体，不消费不借势。"},
+    {rank:16, title:"郑钦文 冲击美网四强", cat:"体育赛事", heat:"",
+     sum:"郑钦文美网逆转晋级八强，将冲击四强，全民关注。",
+     no:true, angle:"运动员无代言关系，消费体育热点易被视为蹭热度；品牌无运动线强背书，建议不借势。"},
+    {rank:17, title:"00后现状怎么做到全国统一的", cat:"情感话题", heat:"",
+     sum:"00 后生活方式“全国统一”盘点走红，青年文化话题。",
+     no:true, angle:"泛青年话题，无具体产品关联点，借势意义弱；建议不借势。"},
+    {rank:24, title:"什么是人生最顶级的享受", cat:"生活方式", heat:"",
+     sum:"“人生顶级享受”讨论走热：自由、健康、被爱、慢下来。",
+     angle:"「顶级的享受是睡个好觉」：光泽感睡衣静奢睡眠叙事，「把夜晚过成享受」，官微 + 小红书，强相关话题。聚焦睡衣单品。"},
+    {rank:26, title:"打了21个耳洞的耳朵", cat:"时尚穿搭", heat:"",
+     sum:"21 个耳洞的个性装扮引发热议，个性表达话题。",
+     no:true, angle:"个性装扮话题与内衣弱相关，“水钻呼应”牵强；建议不借势。"},
+    {rank:27, title:"腿脚不便大妈来退儿子买给女友衣服", cat:"社会事件", heat:"",
+     sum:"大妈腿脚不便替儿子退掉买给女友的衣服，温情又心酸引发热议。",
+     guard:true, angle:"温情社会事件，内衣品类营销化不妥；不借势。"},
+    {rank:29, title:"虞书欣我欲乘风明年开机", cat:"娱乐八卦", heat:"",
+     sum:"虞书欣新剧《我欲乘风》推迟至明年开机，影视行业讨论。",
+     no:true, angle:"无合作关系的明星话题，借势有肖像与舆论风险；建议不借势。"},
+    {rank:30, title:"旅行青蛙", cat:"情感话题", heat:"",
+     sum:"《旅行青蛙》正式停运，玩家集体告别情怀游戏。",
+     no:true, angle:"情怀消费不可取，且与产品无关联；不借势。"},
+    {rank:36, title:"郑钦文以2260万美元位列世界网坛收入榜第七", cat:"体育赛事", heat:"",
+     sum:"福布斯 2026 世界网坛收入榜，郑钦文以 2260 万美元列第七，唯一进入前十的中国选手。",
+     no:true, angle:"商业成绩话题，无代言关系，避免捆绑解读；不借势。"},
+    {rank:37, title:"韩女之间正在流行的苹果派", cat:"时尚穿搭", heat:"",
+     sum:"韩式“苹果派”穿搭风格流行（学院感/甜酷），穿搭趋势内容走热。",
+     no:true, angle:"穿搭趋势面向外穿场景，与内衣/睡衣弱相关；建议不借势。"}
+  ];
+  var DATA = {douyin: DY, xhs: XHS, weibo: WB};
+  var CATS = ["全部","时尚穿搭","体育赛事","影视综艺","情感话题","生活方式","知识科普","社会事件","科技财经","美食探店","娱乐八卦"];
+  var PLATS = [
+    {key:"douyin", name:"抖音热点"},
+    {key:"xhs", name:"小红书热搜"},
+    {key:"weibo", name:"微博热搜"}
+  ];
+  var state = {plat:"douyin", cat:"全部"};
+
+  function el(tag, cls, html){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function top3HTML(){
+    var items = [
+      {no:"借势机会 01", title:"入秋居家仪式感", src:"抖音「送你一口秋天味道」1166万 / 「我有恋秋综合症」", tact:"「入秋第一件居家战袍」：光泽感睡衣（杨幂同款 · 高级感垂坠 · 光泽感面料），夜晚灯光下氛围感短视频 + 小红书「入秋居家仪式感」图文，联动生活方式/家居 KOL，抢占换季居家场景。聚焦睡衣单品。"},
+      {no:"借势机会 02", title:"约会闪耀季", src:"小红书「海边日落赴一场温柔约会」689.4万 / 「碎钻美甲」184.5万", tact:"「赴约的精致内搭」：水钻内衣（闪钻肩带 · 薄杯 · 聚拢）单品内容，约会穿搭小心机，小红书图文 + 抖音短视频，联动美妆/时尚 KOL。聚焦水钻内衣单品。"},
+      {no:"借势机会 03", title:"旅行出片季", src:"小红书「万能旅行拍照姿势」947.5万", tact:"「旅行战袍」：光泽感睡袍缎面光泽出片，「旅行拍照穿什么」指南，联动旅行摄影博主，主打“旅行也要精致放松”。聚焦睡袍单品。"}
+    ];
+    var box = document.getElementById("top3");
+    items.forEach(function(it){
+      var c = el("div","t3");
+      c.appendChild(el("div","no",it.no));
+      c.appendChild(el("h3",null,it.title));
+      c.appendChild(el("div","src",it.src));
+      c.appendChild(el("div","tact","<b>策略</b>：" + it.tact));
+      box.appendChild(c);
+    });
+  }
+
+  function renderTabs(){
+    var box = document.getElementById("tabs");
+    PLATS.forEach(function(p){
+      var t = el("button","tab",p.name);
+      if(p.key === state.plat) t.classList.add("active");
+      t.onclick = function(){
+        state.plat = p.key; state.cat = "全部";
+        renderAll();
+      };
+      box.appendChild(t);
+    });
+  }
+
+  function renderChips(){
+    var box = document.getElementById("chips");
+    CATS.forEach(function(c){
+      var ch = el("button","chip",c);
+      if(c === state.cat) ch.classList.add("active");
+      ch.onclick = function(){
+        state.cat = c;
+        renderAll();
+      };
+      box.appendChild(ch);
+    });
+  }
+
+  function cardHTML(it, idx){
+    var rank = (it.rank < 10 ? "0" : "") + it.rank;
+    var heatEl = it.heat ? el("span","heat",it.heat) : el("span","heat na","热榜");
+    var angleCls = (it.guard || it.no) ? "angle guard" : "angle";
+    var label = it.guard ? "克制建议" : (it.no ? "不推荐借势" : "借势角度");
+    var card = el("article","card");
+    var head = el("div","card-head");
+    head.appendChild(el("span","rank",rank));
+    var tw = el("div");
+    tw.style.minWidth = "0";
+    tw.appendChild(el("div","card-title",it.title));
+    var meta = el("div","card-meta");
+    meta.appendChild(el("span","chip-cat",it.cat));
+    meta.appendChild(heatEl);
+    tw.appendChild(meta);
+    head.appendChild(tw);
+    card.appendChild(head);
+    card.appendChild(el("p","sum",it.sum));
+    card.appendChild(el("div",angleCls,"<b>" + label + "</b>　" + it.angle));
+    return card;
+  }
+
+  function renderList(){
+    var box = document.getElementById("list");
+    box.innerHTML = "";
+    var arr = DATA[state.plat] || [];
+    var list = state.cat === "全部" ? arr : arr.filter(function(x){ return x.cat === state.cat; });
+    document.getElementById("count").textContent = "共 " + list.length + " 条";
+    if(!list.length){
+      box.appendChild(el("div","empty","该分类下暂无精选条目"));
+      return;
+    }
+    list.forEach(function(it){ box.appendChild(cardHTML(it)); });
+  }
+
+  function renderAll(){
+    var t = document.getElementById("tabs");
+    var c = document.getElementById("chips");
+    t.innerHTML = ""; c.innerHTML = "";
+    renderTabs(); renderChips(); renderList();
+  }
+
+  try {
+    top3HTML();
+    renderAll();
+  } catch(e){
+    var box = document.getElementById("list");
+    box.innerHTML = '<div class="empty">页面渲染异常：' + e.message + '</div>';
+  }
+})();
+</script>
+</body>
+</html>

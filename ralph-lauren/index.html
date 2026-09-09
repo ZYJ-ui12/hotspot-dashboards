@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拉夫劳伦 × 全平台热点借势看板 · 2026-09-09</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+  :root{
+    --navy:#1E2A44; --navy2:#141D33; --cream:#F4F0E7; --card:#FFFFFF;
+    --gold:#A8843A; --gold-deep:#8A6A28; --green:#3E6B4F; --red:#B03A2E;
+    --text:#1A1B1C; --sub:#6B7280; --line:#E2DCCB;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--text);
+    font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+    font-weight:400;
+    line-height:1.6;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px 48px;}
+
+  /* ===== 头部 ===== */
+  header{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+    color:#F5F1E6;padding:30px 0 26px;border-bottom:3px solid var(--gold);
+  }
+  .h-wrap{max-width:1060px;margin:0 auto;padding:0 20px;}
+  .brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .brand-en{
+    font-family:'Noto Serif SC',serif;font-size:26px;font-weight:700;
+    letter-spacing:6px;color:#F5F1E6;
+  }
+  .brand-cn{font-size:15px;letter-spacing:3px;color:#D9CFB4;}
+  .brand-cn b{color:var(--gold);font-weight:500;}
+  .meta-line{
+    margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    font-size:12.5px;color:#B9C0D4;
+  }
+  .meta-line .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .tagline{
+    margin-top:14px;font-family:'Noto Serif SC',serif;font-size:17px;color:#F5F1E6;
+    letter-spacing:2px;
+  }
+  .tagline em{font-style:normal;color:var(--gold);}
+  .assets{
+    margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .asset{
+    font-size:11px;border:1px solid rgba(245,241,230,.35);color:#D9CFB4;
+    border-radius:999px;padding:2px 10px;letter-spacing:.5px;
+  }
+  .asset.on{border-color:var(--gold);color:var(--gold);}
+
+  /* ===== 章节标题 ===== */
+  .sec-title{
+    margin:34px 0 14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .sec-title h2{
+    font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:var(--navy);
+  }
+  .sec-title span{font-size:12px;color:var(--sub);}
+
+  /* ===== TOP3 ===== */
+  .top3{display:flex;gap:14px;flex-wrap:wrap;}
+  .t3{
+    flex:1 1 280px;min-width:0;background:var(--card);border:1px solid var(--line);
+    border-top:3px solid var(--gold);border-radius:10px;padding:16px 16px 14px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .t3 .no{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--gold-deep);letter-spacing:1px;}
+  .t3 h3{font-size:16px;font-weight:600;color:var(--navy);}
+  .t3 .src{font-size:11.5px;color:var(--sub);}
+  .t3 .tact{font-size:12.5px;color:var(--text);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;}
+  .t3 .tact b{color:var(--gold-deep);font-weight:600;}
+
+  /* ===== 看板控制 ===== */
+  .controls{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;
+  }
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .tab{
+    font-size:13px;padding:6px 18px;border-radius:8px;border:1px solid var(--line);
+    background:#FAF8F2;color:var(--navy);cursor:pointer;transition:all .15s;
+    font-family:'Noto Sans SC',sans-serif;
+  }
+  .tab.active{background:var(--navy);color:#F5F1E6;border-color:var(--navy);}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{
+    font-size:11.5px;padding:3px 11px;border-radius:999px;border:1px solid var(--line);
+    background:#FAF8F2;color:var(--sub);cursor:pointer;transition:all .15s;
+  }
+  .chip.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+  .count-hint{font-size:11.5px;color:var(--sub);}
+
+  /* ===== 热点卡片 ===== */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;margin-bottom:12px;
+  }
+  .card-head{display:flex;gap:12px;align-items:flex-start;}
+  .rank{
+    font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--navy);
+    line-height:1;min-width:34px;padding-top:2px;
+  }
+  .card-title{font-size:15.5px;font-weight:600;color:var(--navy);line-height:1.4;}
+  .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;}
+  .chip-cat{
+    font-size:11px;background:rgba(30,42,68,.08);color:var(--navy);
+    border-radius:999px;padding:1px 9px;
+  }
+  .heat{
+    font-size:11px;background:rgba(168,132,58,.14);color:var(--gold-deep);
+    border-radius:999px;padding:1px 9px;font-weight:500;
+  }
+  .heat.na{background:rgba(107,114,128,.12);color:var(--sub);}
+  .sum{font-size:12.5px;color:var(--sub);margin-top:9px;line-height:1.65;}
+  .angle{
+    margin-top:9px;background:#FBF9F3;border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--text);
+    line-height:1.65;
+  }
+  .angle b{color:var(--gold-deep);font-weight:600;}
+  .angle.guard{border-left-color:var(--red);background:#FBF6F4;}
+  .angle.guard b{color:var(--red);}
+
+  /* ===== 底部 ===== */
+  footer{
+    margin-top:34px;border-top:1px solid var(--line);padding-top:16px;
+    font-size:11.5px;color:var(--sub);line-height:1.8;
+  }
+  footer b{color:var(--navy);font-weight:600;}
+  .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:13px;}
+
+  @media (max-width:520px){
+    .brand-en{font-size:21px;letter-spacing:4px;}
+    .tagline{font-size:15px;}
+    .sec-title h2{font-size:18px;}
+    .card-title{font-size:14.5px;}
+    .rank{font-size:19px;min-width:28px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-wrap">
+    <div class="brand-line">
+      <span class="brand-en">RALPH LAUREN</span>
+      <span class="brand-cn">拉夫劳伦 · <b>热点借势看板</b></span>
+    </div>
+    <div class="meta-line">
+      <span>2026年9月9日 星期三</span><span class="dot"></span>
+      <span>数据源：抖音热榜 / 小红书热搜 / 微博热搜</span><span class="dot"></span>
+      <span>每日 10:00 自动更新</span>
+    </div>
+    <div class="tagline">永不过时的经典 —— 品牌 × 全平台每日热点结合</div>
+    <div class="assets">
+      <span class="asset">核心单品：Polo 衫 / 牛津衬衫 / 绞花针织 / 西装 / 大衣 / 牛仔</span>
+      <span class="asset">风格：美式经典 · 老钱风 · 常春藤学院风 · 静奢</span>
+      <span class="asset">背书：温网官方服装品牌（2006 年至今）</span>
+      <span class="asset on">副线：Polo / Purple Label / RRL / RLX / Lauren</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="sec-title">
+    <h2>今日品牌借势 TOP3</h2>
+    <span>综合「平台热度 × 品牌契合度」选取，运营优先执行</span>
+  </section>
+  <section class="top3" id="top3"></section>
+
+  <section class="sec-title">
+    <h2>分平台热点 × 借势建议</h2>
+    <span>精选条目，按原榜排名展示；借势建议由运营团队基于品牌资产生成，发布前请运营与合规审核</span>
+  </section>
+
+  <div class="controls">
+    <div class="tabs" id="tabs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="count-hint" id="count"></div>
+  </div>
+
+  <section id="list"></section>
+
+  <footer>
+    <b>数据说明</b>：榜单抓取自公开聚合源（抖音热榜 douyin-hot-hub/巨量算数、微博热搜聚合、小红书热搜 86Tool），抓取时间 2026-09-09 上午；热度值为各源参考值，随榜单实时波动，部分条目未展示数值。展示条目为品牌运营视角精选，非完整榜单。<br>
+    <b>借势建议</b>：依据品牌资产（产品线/风格/背书/副线）按话题分类模板生成；「克制建议」类条目为敏感或社会事件，建议不借势或经合规审批后低调执行。<br>
+    <b>更新机制</b>：本看板每日 10:00 自动重跑生成当日版本，数据与建议随当日热榜更新。
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var DY = [
+    {rank:1, title:"送你一口秋天味道", cat:"生活方式", heat:"1166万",
+     sum:"全国降温带火“入秋”话题，秋天第一杯、第一件、第一景的氛围内容刷屏，早秋穿搭讨论升温。",
+     angle:"抓换季窗口今日发布「经典入秋」系列：绞花针织开衫 + 牛津衬衫 + 卡其裤早秋三件套；抖音发「一口秋天」氛围感穿搭短片，小红书同步「早秋经典色」（驼色/燕麦/藏青）合集，联动生活方式 KOL，配合早秋系列上新。"},
+    {rank:2, title:"跑步可以治愈一切", cat:"生活方式", heat:"1166万",
+     sum:"秋季跑步热潮，用户分享晨跑夜跑的“治愈时刻”，运动穿搭与装备讨论走高。",
+     angle:"RLX 运动线借势「跑步治愈，经典同行」：主打高性能面料 × 经典版型的运动上装；抖音发布晨跑穿搭 Vlog，小红书发「跑步穿什么舒服又好看」干货，联动跑步/健身 KOL。"},
+    {rank:3, title:"平陆运河抢先看", cat:"社会事件", heat:"1153万",
+     sum:"平陆运河将于 9 月 16 日建成通航，“超级工程”航拍引发广泛关注。",
+     angle:"大国工程类话题：不建议强营销借势；如需参与，可从「致敬中国工程」公益叙事切入并提前报合规，否则保持克制。", guard:true},
+    {rank:4, title:"初代神图全靠手抖出片", cat:"时尚穿搭", heat:"1140万",
+     sum:"复古胶片感、手抖出片的老照片质感拍摄手法流行，用户追求有故事感的画面。",
+     angle:"RRL 复古线借势「美式复古出片」：做旧牛仔 + 工装外套的复古穿搭；小红书发「老照片质感穿搭」笔记，联动复古穿搭博主，主打“经典单品经得起时光”。"},
+    {rank:5, title:"秋一下才对味", cat:"生活方式", heat:"1053万",
+     sum:"“秋天要有仪式感”内容升温，用户晒秋日第一件、第一拍。",
+     angle:"与「送你一口秋天味道」合并执行早秋叠穿公式：①Polo 衫 + 针织开衫 + 牛仔裤 ②牛津衬衫 + 西装外套 + 半裙 ③绞花毛衣 + 风衣 + 阔腿裤，跟随话题发布，联动 3 位穿搭达人。"},
+    {rank:6, title:"写给老师的教师节贺卡", cat:"情感话题", heat:"1052万",
+     sum:"9 月 10 日教师节临近，手写贺卡与感恩老师的内容升温。",
+     angle:"教师节礼赠场景「送给老师的经典衬衫」：牛津纺衬衫 / Polo 衫礼赠指南；小红书发教师节穿搭 + 礼盒笔记，联动校园/职场 KOL，主打“经典之物配得上师者风范”。"},
+    {rank:7, title:"皇马2:1击败国米", cat:"体育赛事", heat:"",
+     sum:"欧冠焦点战，皇马主场 2:1 击败国米，姆巴佩破门，球迷热议。",
+     angle:"品牌名源自马球运动的天然运动基因：「球场边的经典」男装观赛穿搭，马球衫/夹克 + 休闲裤，联动体育博主，主打“看球也要穿出经典感”。"},
+    {rank:9, title:"国庆出游日常不费力穿搭", cat:"时尚穿搭", heat:"",
+     sum:"国庆假期临近，“不费力好看”的出游穿搭话题走热，用户求出行清单。",
+     angle:"强关联！「国庆出游经典清单」：卡其裤 + Polo 衫 + 牛仔外套 + 针织开衫；小红书出「7 天旅行穿搭清单」，联动旅行 KOL，主打“永不过时的单品叠出整个假期”。"},
+    {rank:11, title:"香港首任特首董建华逝世", cat:"社会事件", heat:"",
+     sum:"香港首任特首董建华逝世，享年 89 岁，各界表达缅怀。",
+     angle:"敏感事件：尊重逝者，当日停止一切借势营销动作，不参与热点讨论，按企业公关纪律执行。", guard:true},
+    {rank:12, title:"江西遂川泥石流已致12人遇难", cat:"社会事件", heat:"",
+     sum:"江西遂川泥石流灾害已致 12 人遇难，救援工作持续进行。",
+     angle:"灾害事件：保持克制，严禁借灾营销；如需表态，以低调公益/祈福口径，经合规审批后执行。", guard:true},
+    {rank:13, title:"白鹿穿燕麦系小跳一下", cat:"娱乐八卦", heat:"",
+     sum:"白鹿燕麦色系造型随拍刷屏，温柔高级感获赞，多平台发酵。",
+     angle:"借「燕麦色系」热度：燕麦/驼色是拉夫劳伦经典色，发布「白鹿同款燕麦色穿搭解析」，女装系列，抖音短视频 + 小红书图文，主打“温柔与高级感并存”。"},
+    {rank:15, title:"周冬雨马思纯花少再合体", cat:"影视综艺", heat:"",
+     sum:"《花少》新一季嘉宾合体话题，旅行综艺带动旅行穿搭讨论。",
+     angle:"「跟着花少穿经典」：节目播出后 24 小时内发明星旅行穿搭解析，植入轻薄外套、便携针织等旅行单品，联动综艺 KOL，配合播出节奏。"},
+    {rank:17, title:"莱巴金娜称郑钦文是危险对手", cat:"体育赛事", heat:"",
+     sum:"美网女单，郑钦文逆转晋级八强，莱巴金娜称其为“危险对手”，网球热度走高。",
+     angle:"网球借势重点：拉夫劳伦自 2006 年起为温网官方服装品牌，深耕网球美学；发布「郑钦文式球场经典」，网球白 + 学院风穿搭，抖音短视频 + 微博话题，联动网球 KOL。"},
+    {rank:36, title:"我选择火锅作为入秋仪式感", cat:"美食探店", heat:"",
+     sum:"入秋第一顿火锅话题升温，聚餐场景内容走热。",
+     angle:"聚餐穿搭「火锅局也有经典感」：内搭针织 + 外套叠穿，配合香氛礼赠场景，联动美食探店 KOL 做「美食 + 穿搭」组合内容。"},
+    {rank:42, title:"我有恋秋综合症", cat:"情感话题", heat:"",
+     sum:"“恋秋综合症”成网络热词，用户分享对秋日的浪漫情结。",
+     angle:"「恋秋症候群」：秋天经典单品清单（针织开衫/风衣/格纹围巾），情感向文案「把秋天穿成经典」，小红书图文，联动情感/生活方式 KOL。"}
+  ];
+  var XHS = [
+    {rank:1, title:"用万能旅行拍照姿势美美出片", cat:"生活方式", heat:"947.5万",
+     sum:"万能旅行拍照姿势教程刷屏，用户追求“怎么拍都好看”的旅行出片。",
+     angle:"「旅行出片经典穿搭」：经典单品上镜自带高级感，发布「旅行拍照穿什么」指南，小红书图文主阵地，联动旅行摄影博主，主打“经典耐看，出片不尴尬”。"},
+    {rank:2, title:"耗时三年拍下古诗词里的中国", cat:"生活方式", heat:"934.8万",
+     sum:"博主耗时三年拍摄古诗词意境的中国风光，文化内容获高赞收藏。",
+     angle:"「经典如诗，隽永流传」品牌价值共鸣：古诗词的永恒 × 经典单品的永恒；小红书发「永不过时的经典」品牌叙事笔记，弱带货强共鸣。"},
+    {rank:3, title:"我拍到了海鸥雨", cat:"生活方式", heat:"903.2万",
+     sum:"用户拍到海鸥群飞的“海鸥雨”奇观，治愈系内容走热。",
+     angle:"「治愈系松弛感穿搭」：周末海边/城市漫步穿搭，舒适针织 + 休闲外套，联动生活方式 KOL，主打“松弛的状态 + 经典的衣橱”。"},
+    {rank:4, title:"超日常美食教程速来get", cat:"美食探店", heat:"886万",
+     sum:"家常快手菜教程热度高，用户关注“日常幸福感”。",
+     angle:"「日常幸福感穿搭」：居家/下厨场景的舒适穿搭，家居线轻植入，内容主张“穿得舒服才做得开心”。"},
+    {rank:5, title:"定格这一刻的日照金山", cat:"生活方式", heat:"871.1万",
+     sum:"日照金山摄影内容刷屏，户外旅行热情高涨。",
+     angle:"户外旅行穿搭：复古户外/工装线借势「山野间的经典」：抓绒/工装外套 + 牛仔裤，联动户外博主，主打“经典耐穿，陪你看世界”。"},
+    {rank:6, title:"你可以永远相信赛里木湖的美景", cat:"生活方式", heat:"783.1万",
+     sum:"赛里木湖风光刷屏，“有一种蓝叫赛里木湖蓝”。",
+     angle:"「把经典色穿进风景里」：藏青/白色系旅行穿搭，与风景同框的蓝白经典配色，小红书旅行穿搭笔记。"},
+    {rank:8, title:"我的家庭旅行更像是打副本", cat:"生活方式", heat:"737.1万",
+     sum:"家庭旅行“兵荒马乱”的真实吐槽走红，亲子出行话题升温。",
+     angle:"家庭出游亲子装：「一家人整整齐齐经典」，全家经典穿搭（含童装线），小红书亲子穿搭，联动亲子博主。"},
+    {rank:9, title:"原来古诗词里的河南真的存在", cat:"生活方式", heat:"727.8万",
+     sum:"古诗词意境与现实风光对照内容，文化旅行热度延续。",
+     angle:"与「耗时三年拍下古诗词」合并执行「经典永不过时」文化叙事，旅行穿搭轻植入。"},
+    {rank:12, title:"海边日落赴一场温柔约会", cat:"情感话题", heat:"689.4万",
+     sum:"海边日落约会氛围感内容，情侣约会场景话题走热。",
+     angle:"约会穿搭：女装真丝吊带/针织 + 香氛，「赴约的经典仪式感」；小红书「约会穿搭 + 香氛」合集，联动情侣博主。"},
+    {rank:14, title:"我创造了新型遛狗法", cat:"生活方式", heat:"231.8万",
+     sum:"创意遛狗方式走红，宠物与生活趣味内容。",
+     angle:"遛狗/周末松弛穿搭：「遛狗也要穿出经典感」，舒适休闲单品，联动宠物生活方式博主，轻植入。"},
+    {rank:18, title:"珠圆玉润妆完全是淡颜天菜", cat:"时尚穿搭", heat:"193.8万",
+     sum:"“珠圆玉润妆”妆容趋势流行，淡颜系高级感审美受追捧。",
+     angle:"「淡颜系高级感」：简约不等于无聊，静奢美学穿搭，女装 + 配饰；小红书「Less is More 经典美学」笔记，联动美妆时尚博主跨界。"},
+    {rank:19, title:"碎钻美甲指尖藏着细碎星光", cat:"时尚穿搭", heat:"184.5万",
+     sum:"碎钻美甲风流行，精致细节审美兴起。",
+     angle:"「经典与细节」：配饰线（珠宝/腕表）轻植入，或「细节感穿搭」内容，与美甲博主跨界联动。"},
+    {rank:20, title:"我来当旅行中的颜色猎手", cat:"生活方式", heat:"175.7万",
+     sum:"旅行中捕捉色彩搭配的灵感内容，配色审美讨论。",
+     angle:"「经典色旅行配色卡」：藏青/驼/白/橄榄绿四色旅行穿搭方案，小红书图文，联动旅行博主。"}
+  ];
+  var WB = [
+    {rank:2, title:"这段话杀死了内耗型人格", cat:"情感话题", heat:"",
+     sum:"治愈内耗的金句广泛传播，“允许一切发生”式情绪价值内容获共鸣。",
+     angle:"「对抗内耗的经典哲学」：松弛感/长期主义/少即是多，品牌价值观内容「真正的经典，从不慌张」，微博官微发声 + 小红书图文，弱带货。"},
+    {rank:3, title:"这样的吃播该全面叫停了", cat:"社会事件", heat:"",
+     sum:"大胃王/催吐式吃播引发监管关注，官媒发声整治。",
+     angle:"价值观克制：不借势营销；可呼应健康生活方式（如「健康生活从穿得舒适开始」），但避免消费社会议题。", guard:true},
+    {rank:4, title:"平陆运河9月16日建成通航", cat:"社会事件", heat:"",
+     sum:"平陆运河定于 9 月 16 日建成通航，世纪工程进展引关注。",
+     angle:"同抖音同话题：不建议强营销借势，如需发声以公益/致敬口径并报合规。", guard:true},
+    {rank:9, title:"金球奖", cat:"体育赛事", heat:"",
+     sum:"金球奖 30 人候选名单公布，哈兰德、贝林厄姆等在列，足坛年度盛事。",
+     angle:"「金球奖式绅士美学」：男士正装/西装线借势，「颁奖夜之外的日常经典」，西装夹克 + 衬衫穿搭，联动男装博主。"},
+    {rank:11, title:"医生眼里让大脑休息最好的方法", cat:"知识科普", heat:"",
+     sum:"医生科普真正让大脑休息的方式，健康知识获关注。",
+     angle:"「下班后把紧绷卸下来」：通勤到居家的松弛穿搭，舒适针织/家居线，联动健康生活方式 KOL。"},
+    {rank:12, title:"双休不一定是休周六周日", cat:"社会事件", heat:"",
+     sum:"弹性休假话题引发职场人共鸣，讨论“休假自由”。",
+     angle:"「随时随地经典」：通勤/周末无缝切换的一衣多穿，职场 KOL 内容「从会议室到周末市集」。"},
+    {rank:15, title:"印度21岁女运动员因外貌走红", cat:"体育赛事", heat:"",
+     sum:"印度 21 岁女运动员因外貌走红网络，引发关注与讨论。",
+     angle:"尊重个体：不消费外貌话题，不借势；品牌持续传递多元与专业即可。", guard:true},
+    {rank:16, title:"郑钦文 冲击美网四强", cat:"体育赛事", heat:"",
+     sum:"郑钦文美网逆转晋级八强，将冲击四强，全民关注。",
+     angle:"网球借势第一顺位：拉夫劳伦自 2006 年起为温网官方服装品牌，「球场内外的经典」，微博话题 + 抖音短视频，网球白/学院风穿搭解析，联动网球 KOL。"},
+    {rank:17, title:"00后现状怎么做到全国统一的", cat:"情感话题", heat:"",
+     sum:"00 后生活方式“全国统一”盘点走红，青年文化话题。",
+     angle:"「00 后的第一件经典单品」：年轻化内容，Polo 熊/卫衣/棒球帽，抖音年轻人向短视频，主打“经典不挑年龄”。"},
+    {rank:24, title:"什么是人生最顶级的享受", cat:"生活方式", heat:"",
+     sum:"“人生顶级享受”讨论走热：自由、健康、被爱、慢下来。",
+     angle:"「顶级的享受是经典的陪伴」：静奢生活叙事，「一件经典穿十年」，品牌哲学内容，官微 + 小红书，强相关话题。"},
+    {rank:26, title:"打了21个耳洞的耳朵", cat:"时尚穿搭", heat:"",
+     sum:"21 个耳洞的个性装扮引发热议，个性表达话题。",
+     angle:"「个性与经典并存」：经典单品是表达个性的画布，中性/休闲穿搭，轻借势，传递包容多元。"},
+    {rank:27, title:"腿脚不便大妈来退儿子买给女友衣服", cat:"社会事件", heat:"",
+     sum:"大妈腿脚不便替儿子退掉买给女友的衣服，温情又心酸引发热议。",
+     angle:"温情社会事件：不建议营销化借势；可保持沉默，或仅从「亲情/代际」角度做轻人文内容并报合规。", guard:true},
+    {rank:29, title:"虞书欣我欲乘风明年开机", cat:"娱乐八卦", heat:"",
+     sum:"虞书欣新剧《我欲乘风》推迟至明年开机，影视行业讨论。",
+     angle:"「女星穿搭观察」：从虞书欣近期造型切入「经典单品复刻」内容，女装线，小红书图文，轻借势。"},
+    {rank:30, title:"旅行青蛙", cat:"情感话题", heat:"",
+     sum:"《旅行青蛙》正式停运，玩家集体告别情怀游戏。",
+     angle:"「旅行与陪伴的经典」：情怀借势，「你负责出发，经典负责陪伴」旅行单品内容，主打旅行生活方式，不消费停运哀伤。"},
+    {rank:36, title:"郑钦文以2260万美元位列世界网坛收入榜第七", cat:"体育赛事", heat:"",
+     sum:"福布斯 2026 世界网坛收入榜，郑钦文以 2260 万美元列第七，唯一进入前十的中国选手。",
+     angle:"「经典成就，时间见证」：运动员长期主义 × 品牌长期主义叙事，轻借势，不做过度商业捆绑。"},
+    {rank:37, title:"韩女之间正在流行的苹果派", cat:"时尚穿搭", heat:"",
+     sum:"韩式“苹果派”穿搭风格流行（学院感/甜酷），穿搭趋势内容走热。",
+     angle:"强相关！「常春藤学院风新解」：韩式苹果派 × 拉夫劳伦学院风（格纹/针织背心/牛津衬衫），小红书「学院风穿搭」图文，联动时尚 KOL。"}
+  ];
+  var DATA = {douyin: DY, xhs: XHS, weibo: WB};
+  var CATS = ["全部","时尚穿搭","体育赛事","影视综艺","情感话题","生活方式","知识科普","社会事件","科技财经","美食探店","娱乐八卦"];
+  var PLATS = [
+    {key:"douyin", name:"抖音热点"},
+    {key:"xhs", name:"小红书热搜"},
+    {key:"weibo", name:"微博热搜"}
+  ];
+  var state = {plat:"douyin", cat:"全部"};
+
+  function el(tag, cls, html){
+    var e = document.createElement(tag);
+    if(cls) e.className = cls;
+    if(html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function top3HTML(){
+    var items = [
+      {no:"借势机会 01", title:"秋日换季潮", src:"抖音「送你一口秋天味道」1166万 / 「秋一下才对味」1053万 / 「我有恋秋综合症」", tact:"今日核心动作：发布「经典入秋」早秋系列内容（绞花针织开衫 + 牛津衬衫 + 卡其裤三件套、叠穿公式、经典色合集），抖音短视频 + 小红书图文双线铺开，联动穿搭 KOL，抢占换季窗口。"},
+      {no:"借势机会 02", title:"郑钦文美网进行时", src:"微博「冲击美网四强」「收入榜第七」+ 抖音「莱巴金娜称郑钦文是危险对手」", tact:"用「温网官方服装品牌」的网球基因背书：发布网球美学穿搭内容（网球白 + 学院风），跟随赛事节点同步更新，微博话题 + 抖音短视频联动网球 KOL。"},
+      {no:"借势机会 03", title:"旅行出片季", src:"小红书「万能旅行拍照姿势」947.5万 / 「日照金山」871.1万 / 「赛里木湖」783.1万", tact:"小红书主阵地：发布「旅行经典穿搭清单」+「经典色旅行配色卡」，联动旅行摄影博主，主打“经典单品上镜自带高级感、怎么拍都好看”。"}
+    ];
+    var box = document.getElementById("top3");
+    items.forEach(function(it){
+      var c = el("div","t3");
+      c.appendChild(el("div","no",it.no));
+      c.appendChild(el("h3",null,it.title));
+      c.appendChild(el("div","src",it.src));
+      c.appendChild(el("div","tact","<b>策略</b>：" + it.tact));
+      box.appendChild(c);
+    });
+  }
+
+  function renderTabs(){
+    var box = document.getElementById("tabs");
+    PLATS.forEach(function(p){
+      var t = el("button","tab",p.name);
+      if(p.key === state.plat) t.classList.add("active");
+      t.onclick = function(){
+        state.plat = p.key; state.cat = "全部";
+        renderAll();
+      };
+      box.appendChild(t);
+    });
+  }
+
+  function renderChips(){
+    var box = document.getElementById("chips");
+    CATS.forEach(function(c){
+      var ch = el("button","chip",c);
+      if(c === state.cat) ch.classList.add("active");
+      ch.onclick = function(){
+        state.cat = c;
+        renderAll();
+      };
+      box.appendChild(ch);
+    });
+  }
+
+  function cardHTML(it, idx){
+    var rank = (it.rank < 10 ? "0" : "") + it.rank;
+    var heatEl = it.heat ? el("span","heat",it.heat) : el("span","heat na","热榜");
+    var angleCls = it.guard ? "angle guard" : "angle";
+    var label = it.guard ? "克制建议" : "借势角度";
+    var card = el("article","card");
+    var head = el("div","card-head");
+    head.appendChild(el("span","rank",rank));
+    var tw = el("div");
+    tw.style.minWidth = "0";
+    tw.appendChild(el("div","card-title",it.title));
+    var meta = el("div","card-meta");
+    meta.appendChild(el("span","chip-cat",it.cat));
+    meta.appendChild(heatEl);
+    tw.appendChild(meta);
+    head.appendChild(tw);
+    card.appendChild(head);
+    card.appendChild(el("p","sum",it.sum));
+    card.appendChild(el("div",angleCls,"<b>" + label + "</b>　" + it.angle));
+    return card;
+  }
+
+  function renderList(){
+    var box = document.getElementById("list");
+    box.innerHTML = "";
+    var arr = DATA[state.plat] || [];
+    var list = state.cat === "全部" ? arr : arr.filter(function(x){ return x.cat === state.cat; });
+    document.getElementById("count").textContent = "共 " + list.length + " 条";
+    if(!list.length){
+      box.appendChild(el("div","empty","该分类下暂无精选条目"));
+      return;
+    }
+    list.forEach(function(it){ box.appendChild(cardHTML(it)); });
+  }
+
+  function renderAll(){
+    var t = document.getElementById("tabs");
+    var c = document.getElementById("chips");
+    t.innerHTML = ""; c.innerHTML = "";
+    renderTabs(); renderChips(); renderList();
+  }
+
+  try {
+    top3HTML();
+    renderAll();
+  } catch(e){
+    var box = document.getElementById("list");
+    box.innerHTML = '<div class="empty">页面渲染异常：' + e.message + '</div>';
+  }
+})();
+</script>
+</body>
+</html>
