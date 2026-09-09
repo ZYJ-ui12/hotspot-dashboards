@@ -7,17 +7,15 @@
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
 <style>
 
-
-
   :root{
-    --navy:#1E2A44; --navy2:#141D33; --cream:#F4F0E7; --card:#FFFFFF;
-    --gold:#A8843A; --gold-deep:#8A6A28; --green:#3E6B4F; --red:#B03A2E;
-    --text:#1A1B1C; --sub:#6B7280; --line:#E2DCCB;
+    --ink:#2A2130; --ink2:#17111B; --bg:#F8F4F3; --card:#FFFFFF;
+    --rose:#CD4E43; --rose-deep:#A23A31; --red:#B03A2E;
+    --text:#1A1B1C; --sub:#6B7280; --line:#E9DFE0;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    background:var(--cream);
+    background:var(--bg);
     color:var(--text);
     font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
     font-weight:400;
@@ -27,42 +25,42 @@
 
   /* ===== 头部 ===== */
   header{
-    background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
-    color:#F5F1E6;padding:30px 0 26px;border-bottom:3px solid var(--gold);
+    background:linear-gradient(135deg,#1A141D 0%,#120D16 100%);
+    color:#F6EFED;padding:30px 0 26px;border-bottom:3px solid var(--rose);
   }
   .h-wrap{max-width:1060px;margin:0 auto;padding:0 20px;}
   .brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
   .brand-en{
     font-family:'Noto Serif SC',serif;font-size:26px;font-weight:700;
-    letter-spacing:6px;color:#F5F1E6;
+    letter-spacing:6px;color:#F6EFED;
   }
-  .brand-cn{font-size:15px;letter-spacing:3px;color:#D9CFB4;}
-  .brand-cn b{color:var(--gold);font-weight:500;}
+  .brand-cn{font-size:15px;letter-spacing:3px;color:#D9C6C2;}
+  .brand-cn b{color:var(--rose);font-weight:500;}
   .meta-line{
     margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    font-size:12.5px;color:#B9C0D4;
+    font-size:12.5px;color:#B9AEB6;
   }
-  .meta-line .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .meta-line .dot{width:4px;height:4px;border-radius:50%;background:var(--rose);display:inline-block;}
   .tagline{
-    margin-top:14px;font-family:'Noto Serif SC',serif;font-size:17px;color:#F5F1E6;
+    margin-top:14px;font-family:'Noto Serif SC',serif;font-size:17px;color:#F6EFED;
     letter-spacing:2px;
   }
-  .tagline em{font-style:normal;color:var(--gold);}
+  .tagline em{font-style:normal;color:var(--rose);}
   .assets{
     margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;
   }
   .asset{
-    font-size:11px;border:1px solid rgba(245,241,230,.35);color:#D9CFB4;
+    font-size:11px;border:1px solid rgba(246,239,237,.35);color:#D9C6C2;
     border-radius:999px;padding:2px 10px;letter-spacing:.5px;
   }
-  .asset.on{border-color:var(--gold);color:var(--gold);}
+  .asset.on{border-color:var(--rose);color:var(--rose);}
 
   /* ===== 章节标题 ===== */
   .sec-title{
     margin:34px 0 14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
   }
   .sec-title h2{
-    font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:var(--navy);
+    font-family:'Noto Serif SC',serif;font-size:20px;font-weight:600;color:var(--ink);
   }
   .sec-title span{font-size:12px;color:var(--sub);}
 
@@ -70,14 +68,14 @@
   .top3{display:flex;gap:14px;flex-wrap:wrap;}
   .t3{
     flex:1 1 280px;min-width:0;background:var(--card);border:1px solid var(--line);
-    border-top:3px solid var(--gold);border-radius:10px;padding:16px 16px 14px;
+    border-top:3px solid var(--rose);border-radius:10px;padding:16px 16px 14px;
     display:flex;flex-direction:column;gap:6px;
   }
-  .t3 .no{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--gold-deep);letter-spacing:1px;}
-  .t3 h3{font-size:16px;font-weight:600;color:var(--navy);}
+  .t3 .no{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--rose-deep);letter-spacing:1px;}
+  .t3 h3{font-size:16px;font-weight:600;color:var(--ink);}
   .t3 .src{font-size:11.5px;color:var(--sub);}
   .t3 .tact{font-size:12.5px;color:var(--text);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;}
-  .t3 .tact b{color:var(--gold-deep);font-weight:600;}
+  .t3 .tact b{color:var(--rose-deep);font-weight:600;}
 
   /* ===== 看板控制 ===== */
   .controls{
@@ -87,17 +85,20 @@
   .tabs{display:flex;gap:8px;flex-wrap:wrap;}
   .tab{
     font-size:13px;padding:6px 18px;border-radius:8px;border:1px solid var(--line);
-    background:#FAF8F2;color:var(--navy);cursor:pointer;transition:all .15s;
+    background:#FDFBFA;color:var(--ink);cursor:pointer;transition:all .15s;
     font-family:'Noto Sans SC',sans-serif;
   }
-  .tab.active{background:var(--navy);color:#F5F1E6;border-color:var(--navy);}
+  .tab.active{background:var(--ink);color:#F6EFED;border-color:var(--ink);}
   .chips{display:flex;gap:6px;flex-wrap:wrap;}
   .chip{
     font-size:11.5px;padding:3px 11px;border-radius:999px;border:1px solid var(--line);
-    background:#FAF8F2;color:var(--sub);cursor:pointer;transition:all .15s;
+    background:#FDFBFA;color:var(--sub);cursor:pointer;transition:all .15s;
   }
-  .chip.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+  .chip.active{background:var(--rose);color:#fff;border-color:var(--rose);}
   .count-hint{font-size:11.5px;color:var(--sub);}
+  .ctrl-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .ctrl-label{font-size:11.5px;color:var(--sub);white-space:nowrap;letter-spacing:1px;}
+  .chips .cnt{font-size:10.5px;opacity:.8;margin-left:4px;}
 
   /* ===== 热点卡片 ===== */
   .card{
@@ -106,36 +107,38 @@
   }
   .card-head{display:flex;gap:12px;align-items:flex-start;}
   .rank{
-    font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--navy);
+    font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--ink);
     line-height:1;min-width:34px;padding-top:2px;
   }
-  .card-title{font-size:15.5px;font-weight:600;color:var(--navy);line-height:1.4;}
+  .card-title{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.4;}
   .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;}
   .chip-cat{
-    font-size:11px;background:rgba(30,42,68,.08);color:var(--navy);
+    font-size:11px;background:rgba(42,33,48,.08);color:var(--ink);
     border-radius:999px;padding:1px 9px;
   }
   .heat{
-    font-size:11px;background:rgba(168,132,58,.14);color:var(--gold-deep);
+    font-size:11px;background:rgba(205,78,67,.14);color:var(--rose-deep);
     border-radius:999px;padding:1px 9px;font-weight:500;
   }
   .heat.na{background:rgba(107,114,128,.12);color:var(--sub);}
   .sum{font-size:12.5px;color:var(--sub);margin-top:9px;line-height:1.65;}
   .angle{
-    margin-top:9px;background:#FBF9F3;border-left:3px solid var(--gold);
+    margin-top:9px;background:#FCF7F5;border-left:3px solid var(--rose);
     border-radius:0 8px 8px 0;padding:8px 12px;font-size:12.5px;color:var(--text);
     line-height:1.65;
   }
-  .angle b{color:var(--gold-deep);font-weight:600;}
-  .angle.guard{border-left-color:var(--red);background:#FBF6F4;}
+  .angle b{color:var(--rose-deep);font-weight:600;}
+  .angle.guard{border-left-color:var(--red);background:#FBF5F2;}
   .angle.guard b{color:var(--red);}
+  .angle.no{border-left-color:#9aa1a9;background:#f7f8f9;}
+  .angle.no b{color:#5b6470;}
 
   /* ===== 底部 ===== */
   footer{
     margin-top:34px;border-top:1px solid var(--line);padding-top:16px;
     font-size:11.5px;color:var(--sub);line-height:1.8;
   }
-  footer b{color:var(--navy);font-weight:600;}
+  footer b{color:var(--ink);font-weight:600;}
   .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:13px;}
 
   @media (max-width:520px){
@@ -146,20 +149,6 @@
     .rank{font-size:19px;min-width:28px;}
   }
 
-  .angle.no{border-left-color:#9aa1a9;background:#f7f8f9;}
-  .angle.no b{color:#5b6470;}
-
-  .angle.no{border-left-color:#9aa1a9;background:#f7f8f9;}
-  .angle.no b{color:#5b6470;}
-  .ctrl-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .ctrl-label{font-size:11.5px;color:var(--sub);white-space:nowrap;letter-spacing:1px;}
-  .chips .cnt{font-size:10.5px;opacity:.8;margin-left:4px;}
-
-  .angle.no{border-left-color:#9aa1a9;background:#f7f8f9;}
-  .angle.no b{color:#5b6470;}
-  .ctrl-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .ctrl-label{font-size:11.5px;color:var(--sub);white-space:nowrap;letter-spacing:1px;}
-  .chips .cnt{font-size:10.5px;opacity:.8;margin-left:4px;}
 </style>
 </head>
 <body>
