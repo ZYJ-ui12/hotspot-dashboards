@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import json, io, sys, os, re, datetime
+import json, io, sys, os, re, datetime, base64
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # 云端运行：本文件位于 repo/scripts/build.py，repo 根为上一级
@@ -57,6 +57,12 @@ def build(brand, meta):
         data[plat] = rows
     js = json.dumps(data, ensure_ascii=False)
     css = RL_CSS if brand == 'rl' else VS_CSS
+    # 读取品牌 logo，base64 内嵌
+    logo_file = 'rl-logo.png' if brand == 'rl' else 'vs-logo.png'
+    logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', logo_file)
+    with open(logo_path, 'rb') as f:
+        logo_b64 = base64.b64encode(f.read()).decode('ascii')
+    meta['logo'] = 'data:image/png;base64,' + logo_b64
     return render(meta, js, css)
 
 RL_CSS = open(os.path.join(root, 'ralph-lauren', 'index.html'), encoding='utf-8').read()
@@ -85,7 +91,9 @@ VS_CSS = r'''
     color:#F6EFED;padding:30px 0 26px;border-bottom:3px solid var(--rose);
   }
   .h-wrap{max-width:1060px;margin:0 auto;padding:0 20px;}
-  .brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .brand-line{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .brand-logo{height:52px;width:auto;object-fit:contain;flex-shrink:0;}
+  .brand-text{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
   .brand-en{
     font-family:'Noto Serif SC',serif;font-size:26px;font-weight:700;
     letter-spacing:6px;color:#F6EFED;
@@ -222,8 +230,11 @@ TPL = '''<!DOCTYPE html>
 <header>
   <div class="h-wrap">
     <div class="brand-line">
-      <span class="brand-en">{EN}</span>
-      <span class="brand-cn">{CN} · <b>热点借势看板</b></span>
+      <img class="brand-logo" src="{LOGO}" alt="{EN}">
+      <div class="brand-text">
+        <span class="brand-en">{EN}</span>
+        <span class="brand-cn">{CN} · <b>热点借势看板</b></span>
+      </div>
     </div>
     <div class="meta-line">
       <span>2026年9月9日 星期三</span><span class="dot"></span>
@@ -429,6 +440,7 @@ def render(meta, data_js, css):
     date_iso = '%04d-%02d-%02d' % (now.year, now.month, now.day)
     out = TPL.format(
         TITLE=meta['title'], EN=meta['en'], CN=meta['cn'], TAGLINE=meta['tagline'],
+        LOGO=meta.get('logo', ''),
         ASSETS=assets, DATA=data_js,
         CATS=json.dumps(cats, ensure_ascii=False),
         TOP3=json.dumps(meta['top3'], ensure_ascii=False),
