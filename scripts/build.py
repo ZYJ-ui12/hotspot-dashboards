@@ -57,12 +57,6 @@ def build(brand, meta):
         data[plat] = rows
     js = json.dumps(data, ensure_ascii=False)
     css = RL_CSS if brand == 'rl' else VS_CSS
-    # 读取品牌 logo，base64 内嵌
-    logo_file = 'rl-logo.png' if brand == 'rl' else 'vs-logo.png'
-    logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', logo_file)
-    with open(logo_path, 'rb') as f:
-        logo_b64 = base64.b64encode(f.read()).decode('ascii')
-    meta['logo'] = 'data:image/png;base64,' + logo_b64
     return render(meta, js, css)
 
 RL_CSS = open(os.path.join(root, 'ralph-lauren', 'index.html'), encoding='utf-8').read()
@@ -91,9 +85,7 @@ VS_CSS = r'''
     color:#F6EFED;padding:30px 0 26px;border-bottom:3px solid var(--rose);
   }
   .h-wrap{max-width:1060px;margin:0 auto;padding:0 20px;}
-  .brand-line{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .brand-logo{height:52px;width:auto;object-fit:contain;flex-shrink:0;}
-  .brand-text{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .brand-line{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
   .brand-en{
     font-family:'Noto Serif SC',serif;font-size:26px;font-weight:700;
     letter-spacing:6px;color:#F6EFED;
@@ -205,6 +197,51 @@ VS_CSS = r'''
   footer b{color:var(--ink);font-weight:600;}
   .empty{text-align:center;color:var(--sub);padding:40px 0;font-size:13px;}
 
+  /* ===== Apple 风格优化 ===== */
+  header{
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    background:rgba(18,13,22,0.85);
+  }
+  .card{
+    transition:transform .35s cubic-bezier(.4,0,.2,1),box-shadow .35s cubic-bezier(.4,0,.2,1),border-color .35s;
+    box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 30px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.04);
+    border-color:rgba(205,78,67,.25);
+  }
+  .t3{
+    transition:transform .35s cubic-bezier(.4,0,.2,1),box-shadow .35s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);
+  }
+  .t3:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 32px rgba(205,78,67,.12),0 3px 10px rgba(0,0,0,.05);
+  }
+  .filter-btn,.cat-btn{
+    transition:all .28s cubic-bezier(.4,0,.2,1);
+    cursor:pointer;
+  }
+  .filter-btn:hover,.cat-btn:hover{
+    transform:translateY(-1px);
+  }
+  .filter-btn.active,.cat-btn.active{
+    transform:scale(1.02);
+  }
+  .asset{transition:all .25s ease;cursor:default;}
+  .asset:hover{border-color:var(--rose);color:var(--rose);}
+  .tag{transition:all .25s ease;}
+  .card-angle{transition:color .25s ease;}
+  .card:hover .card-angle{color:var(--rose-deep);}
+  .rank{transition:transform .3s cubic-bezier(.4,0,.2,1);}
+  .card:hover .rank{transform:scale(1.08);}
+  /* 滚动淡入 */
+  .card,.t3{opacity:0;transform:translateY(12px);animation:fadeUp .5s cubic-bezier(.4,0,.2,1) forwards;}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+  .card:hover{animation:none;opacity:1;transform:translateY(-3px);}
+
   @media (max-width:520px){
     .brand-en{font-size:21px;letter-spacing:4px;}
     .tagline{font-size:15px;}
@@ -230,11 +267,8 @@ TPL = '''<!DOCTYPE html>
 <header>
   <div class="h-wrap">
     <div class="brand-line">
-      <img class="brand-logo" src="{LOGO}" alt="{EN}">
-      <div class="brand-text">
-        <span class="brand-en">{EN}</span>
-        <span class="brand-cn">{CN} · <b>热点借势看板</b></span>
-      </div>
+      <span class="brand-en">{EN}</span>
+      <span class="brand-cn">{CN} · <b>热点借势看板</b></span>
     </div>
     <div class="meta-line">
       <span>2026年9月9日 星期三</span><span class="dot"></span>
@@ -440,7 +474,6 @@ def render(meta, data_js, css):
     date_iso = '%04d-%02d-%02d' % (now.year, now.month, now.day)
     out = TPL.format(
         TITLE=meta['title'], EN=meta['en'], CN=meta['cn'], TAGLINE=meta['tagline'],
-        LOGO=meta.get('logo', ''),
         ASSETS=assets, DATA=data_js,
         CATS=json.dumps(cats, ensure_ascii=False),
         TOP3=json.dumps(meta['top3'], ensure_ascii=False),
