@@ -571,10 +571,10 @@ TPL = '''<!DOCTYPE html>
     var header = ["排名","标题","平台","热度","内容类型","推荐类型","优先级","借势建议","摘要"];
     var rows = list.map(function(it){{
       var tagLabel = it.tag === "angle" ? "借势角度" : (it.tag === "no" ? "不推荐借势" : "克制建议");
-      return [it.rank, it.title, platName, it.heat, it.cat, tagLabel, it.priority, it.angle.replace(/"/g, "\"\""), it.sum.replace(/"/g, "\"\"")];
+      return [it.rank, it.title, platName, it.heat, it.cat, tagLabel, it.priority, it.angle.replace(/"/g, "\\\"\\\""), it.sum.replace(/"/g, "\\\"\\\"")];
     }});
     var csv = "\\uFEFF" + [header].concat(rows).map(function(r){{
-      return r.map(function(c){{ return "\"" + String(c).replace(/"/g, "\"\"") + "\""; }}).join(",");
+      return r.map(function(c){{ return "\\\"" + String(c).replace(/"/g, "\\\"\\\"") + "\\\""; }}).join(",");
     }}).join("\\n");
     var blob = new Blob([csv], {{type:"text/csv;charset=utf-8"}});
     var url = URL.createObjectURL(blob);
