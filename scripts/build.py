@@ -39,11 +39,34 @@ def fmt_hot(v):
 
 def build(brand, meta):
     data = {}
+    # 收集所有平台的热度用于归一化
+    all_heats = []
+    for plat in ('douyin', 'weibo', 'xhs'):
+        for it in hot[plat]:
+            try:
+                all_heats.append(float(str(it['hot']).replace('万', '0000').replace('亿', '00000000')))
+            except (ValueError, TypeError):
+                pass
+    max_heat = max(all_heats) if all_heats else 1
+    min_heat = min(all_heats) if all_heats else 0
+
+    def calc_priority(heat_str, tag):
+        # 热度归一化 0-50
+        try:
+            h = float(str(heat_str).replace('万', '0000').replace('亿', '00000000'))
+            heat_score = ((h - min_heat) / (max_heat - min_heat) * 50) if max_heat > min_heat else 25
+        except (ValueError, TypeError, ZeroDivisionError):
+            heat_score = 25
+        # 契合度 0-50
+        fit_score = {'angle': 50, 'no': 10, 'guard': 5}.get(tag, 15)
+        return round(heat_score + fit_score)
+
     for plat in ('douyin', 'weibo', 'xhs'):
         rows = []
         for it in hot[plat]:
             a = adv[it['title']]
             tag, angle = a['rl'] if brand == 'rl' else a['vs']
+            priority = calc_priority(it['hot'], tag)
             rows.append({
                 'rank': it['rank'],
                 'title': it['title'],
@@ -52,6 +75,7 @@ def build(brand, meta):
                 'sum': a['sum'],
                 'tag': tag,
                 'angle': angle,
+                'priority': priority,
             })
         rows.sort(key=lambda x: x['rank'])
         data[plat] = rows
@@ -242,6 +266,43 @@ VS_CSS = r'''
   @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
   .card:hover{animation:none;opacity:1;transform:translateY(-3px);}
 
+  /* ===== P0 功能样式 ===== */
+  .ctrl-row-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .sort-wrap{display:flex;align-items:center;gap:8px;}
+  .sort-select{
+    padding:6px 12px;border:1px solid var(--line);border-radius:8px;
+    background:var(--card);color:var(--text);font-size:12.5px;cursor:pointer;
+    transition:border-color .25s,box-shadow .25s;
+  }
+  .sort-select:hover{border-color:var(--rose);box-shadow:0 2px 8px rgba(205,78,67,.1);}
+  .sort-select:focus{outline:none;border-color:var(--rose);}
+  .export-wrap{display:flex;gap:8px;flex-wrap:wrap;}
+  .export-btn{
+    padding:6px 14px;border:1px solid var(--line);border-radius:8px;
+    background:var(--card);color:var(--text);font-size:12px;cursor:pointer;
+    transition:all .25s cubic-bezier(.4,0,.2,1);
+  }
+  .export-btn:hover{
+    border-color:var(--rose);color:var(--rose);
+    transform:translateY(-1px);box-shadow:0 4px 12px rgba(205,78,67,.12);
+  }
+  .pri{
+    font-size:11px;padding:2px 8px;border-radius:999px;
+    background:rgba(107,114,128,.1);color:var(--sub);font-weight:500;
+  }
+  .pri-mid{background:rgba(245,158,11,.12);color:#B45309;}
+  .pri-high{background:rgba(205,78,67,.12);color:var(--rose-deep);font-weight:600;}
+  .angle{position:relative;}
+  .copy-btn{
+    position:absolute;top:8px;right:8px;
+    padding:3px 10px;border:1px solid var(--line);border-radius:6px;
+    background:var(--card);color:var(--sub);font-size:11px;cursor:pointer;
+    transition:all .2s;opacity:0;
+  }
+  .card:hover .copy-btn{opacity:1;}
+  .copy-btn:hover{border-color:var(--rose);color:var(--rose);}
+  .copy-btn.copied{background:var(--rose);color:#fff;border-color:var(--rose);}
+
   @media (max-width:520px){
     .brand-en{font-size:21px;letter-spacing:4px;}
     .tagline{font-size:15px;}
@@ -299,6 +360,21 @@ TPL = '''<!DOCTYPE html>
     <div class="tabs" id="tabs"></div>
     <div class="ctrl-row"><span class="ctrl-label">推荐类型</span><div class="chips" id="rec-chips"></div></div>
     <div class="ctrl-row"><span class="ctrl-label">内容类型</span><div class="chips" id="cat-chips"></div></div>
+    <div class="ctrl-row ctrl-row-bottom">
+      <div class="sort-wrap">
+        <span class="ctrl-label">排序</span>
+        <select class="sort-select" id="sort-select">
+          <option value="rank">按排名</option>
+          <option value="heat">按热度</option>
+          <option value="priority">按优先级</option>
+        </select>
+      </div>
+      <div class="export-wrap">
+        <button class="export-btn" id="export-csv">导出 CSV</button>
+        <button class="export-btn" id="export-md">复制为表格</button>
+        <button class="export-btn" id="export-top3">复制 TOP3 简报</button>
+      </div>
+    </div>
     <div class="count-hint" id="count"></div>
   </div>
 
@@ -411,20 +487,38 @@ TPL = '''<!DOCTYPE html>
     var cls = "angle", label = "借势角度";
     if(it.tag === "no"){{ cls = "angle no"; label = "不推荐借势"; }}
     if(it.tag === "guard"){{ cls = "angle guard"; label = "克制建议"; }}
+    var priCls = "pri";
+    if(it.priority >= 80) priCls += " pri-high";
+    else if(it.priority >= 60) priCls += " pri-mid";
     var card = el("article","card");
     var head = el("div","card-head");
     head.appendChild(el("span","rank",rank));
     var tw = el("div");
     tw.style.minWidth = "0";
+    tw.style.flex = "1";
     tw.appendChild(el("div","card-title",it.title));
     var meta = el("div","card-meta");
     meta.appendChild(el("span","chip-cat",it.cat));
     meta.appendChild(heatEl);
+    meta.appendChild(el("span",priCls,"优先级 " + it.priority));
     tw.appendChild(meta);
     head.appendChild(tw);
     card.appendChild(head);
     card.appendChild(el("p","sum",it.sum));
-    card.appendChild(el("div",cls,"<b>" + label + "</b>　" + it.angle));
+    var angleBox = el("div",cls);
+    angleBox.innerHTML = "<b>" + label + "</b>　" + it.angle;
+    var copyBtn = el("button","copy-btn","复制");
+    copyBtn.onclick = function(e){{
+      e.stopPropagation();
+      var text = it.title + "\\n" + label + "：" + it.angle + "\\n优先级：" + it.priority + " | 热度：" + it.heat + " | 分类：" + it.cat;
+      navigator.clipboard.writeText(text).then(function(){{
+        copyBtn.textContent = "已复制";
+        copyBtn.classList.add("copied");
+        setTimeout(function(){{ copyBtn.textContent = "复制"; copyBtn.classList.remove("copied"); }}, 1500);
+      }});
+    }};
+    angleBox.appendChild(copyBtn);
+    card.appendChild(angleBox);
     return card;
   }}
 
@@ -437,12 +531,88 @@ TPL = '''<!DOCTYPE html>
       var okRec = state.rec === "全部" || x.tag === state.rec;
       return okCat && okRec;
     }});
+    // 排序
+    var sortBy = document.getElementById("sort-select").value;
+    if(sortBy === "heat"){{
+      list.sort(function(a,b){{ return parseHeat(b.heat) - parseHeat(a.heat); }});
+    }} else if(sortBy === "priority"){{
+      list.sort(function(a,b){{ return b.priority - a.priority; }});
+    }} else {{
+      list.sort(function(a,b){{ return a.rank - b.rank; }});
+    }}
     document.getElementById("count").textContent = "共 " + list.length + " 条";
     if(!list.length){{
       box.appendChild(el("div","empty","该分类下暂无条目"));
       return;
     }}
     list.forEach(function(it){{ box.appendChild(cardHTML(it)); }});
+  }}
+
+  function parseHeat(s){{
+    if(!s) return 0;
+    s = String(s).replace(/[^0-9.\u4e07\u4ebf]/g, "");
+    if(s.indexOf("\u4e07") >= 0) return parseFloat(s) * 10000;
+    if(s.indexOf("\u4ebf") >= 0) return parseFloat(s) * 100000000;
+    return parseFloat(s) || 0;
+  }}
+
+  function getFilteredList(){{
+    var arr = DATA[state.plat] || [];
+    return arr.filter(function(x){{
+      var okCat = state.cat === "全部" || x.cat === state.cat;
+      var okRec = state.rec === "全部" || x.tag === state.rec;
+      return okCat && okRec;
+    }});
+  }}
+
+  function exportCSV(){{
+    var list = getFilteredList();
+    var platName = state.plat === "douyin" ? "抖音" : (state.plat === "xhs" ? "小红书" : "微博");
+    var header = ["排名","标题","平台","热度","内容类型","推荐类型","优先级","借势建议","摘要"];
+    var rows = list.map(function(it){{
+      var tagLabel = it.tag === "angle" ? "借势角度" : (it.tag === "no" ? "不推荐借势" : "克制建议");
+      return [it.rank, it.title, platName, it.heat, it.cat, tagLabel, it.priority, it.angle.replace(/"/g, "\"\""), it.sum.replace(/"/g, "\"\"")];
+    }});
+    var csv = "\\uFEFF" + [header].concat(rows).map(function(r){{
+      return r.map(function(c){{ return "\"" + String(c).replace(/"/g, "\"\"") + "\""; }}).join(",");
+    }}).join("\\n");
+    var blob = new Blob([csv], {{type:"text/csv;charset=utf-8"}});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "热点借势_" + platName + "_" + new Date().toISOString().slice(0,10) + ".csv";
+    a.click(); URL.revokeObjectURL(url);
+  }}
+
+  function exportMarkdown(){{
+    var list = getFilteredList();
+    var platName = state.plat === "douyin" ? "抖音" : (state.plat === "xhs" ? "小红书" : "微博");
+    var md = "## " + platName + "热点借势建议（" + list.length + "条）\\n\\n";
+    md += "| 排名 | 标题 | 热度 | 类型 | 推荐 | 优先级 | 借势建议 |\\n";
+    md += "|---|---|---|---|---|---|---|\\n";
+    list.forEach(function(it){{
+      var tagLabel = it.tag === "angle" ? "✅借势" : (it.tag === "no" ? "❌不推荐" : "⚠️克制");
+      md += "| " + it.rank + " | " + it.title + " | " + it.heat + " | " + it.cat + " | " + tagLabel + " | " + it.priority + " | " + it.angle + " |\\n";
+    }});
+    navigator.clipboard.writeText(md).then(function(){{
+      var btn = document.getElementById("export-md");
+      var old = btn.textContent; btn.textContent = "已复制到剪贴板";
+      setTimeout(function(){{ btn.textContent = old; }}, 1500);
+    }});
+  }}
+
+  function exportTop3(){{
+    var items = {TOP3};
+    var md = "## 今日品牌借势 TOP3\\n\\n";
+    items.forEach(function(it){{
+      md += "### " + it.no + "：" + it.title + "\\n\\n";
+      md += "- **来源**：" + it.src + "\\n";
+      md += "- **策略**：" + it.tact + "\\n\\n";
+    }});
+    navigator.clipboard.writeText(md).then(function(){{
+      var btn = document.getElementById("export-top3");
+      var old = btn.textContent; btn.textContent = "已复制到剪贴板";
+      setTimeout(function(){{ btn.textContent = old; }}, 1500);
+    }});
   }}
 
   function renderAll(){{
@@ -456,6 +626,10 @@ TPL = '''<!DOCTYPE html>
   try {{
     top3HTML();
     renderAll();
+    document.getElementById("sort-select").addEventListener("change", renderList);
+    document.getElementById("export-csv").addEventListener("click", exportCSV);
+    document.getElementById("export-md").addEventListener("click", exportMarkdown);
+    document.getElementById("export-top3").addEventListener("click", exportTop3);
   }} catch(e){{
     var box = document.getElementById("list");
     box.innerHTML = '<div class="empty">页面渲染异常：' + e.message + '</div>';
