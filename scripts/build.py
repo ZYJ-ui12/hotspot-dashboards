@@ -114,6 +114,7 @@ def build(brand, meta):
                 'fit_score': fit_score,
                 'life_days': life_days,
                 'heat_trend': heat_trend[-7:] if len(heat_trend) > 7 else heat_trend,
+                'plat': plat,
             })
         rows.sort(key=lambda x: x['rank'])
         data[plat] = rows
@@ -229,6 +230,8 @@ VS_CSS = r'''
     line-height:1;min-width:34px;padding-top:2px;
   }
   .card-title{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.4;}
+  a.card-title{text-decoration:none;cursor:pointer;transition:color .2s;}
+  a.card-title:hover{color:var(--rose);text-decoration:underline;text-underline-offset:3px;}
   .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;}
   .chip-cat{
     font-size:11px;background:rgba(42,33,48,.08);color:var(--ink);
@@ -611,7 +614,16 @@ TPL = '''<!DOCTYPE html>
     var tw = el("div");
     tw.style.minWidth = "0";
     tw.style.flex = "1";
-    tw.appendChild(el("div","card-title",it.title));
+    var searchUrl = "";
+    if(it.plat === "douyin") searchUrl = "https://www.douyin.com/search/" + encodeURIComponent(it.title);
+    else if(it.plat === "xhs") searchUrl = "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent(it.title);
+    else if(it.plat === "weibo") searchUrl = "https://s.weibo.com/weibo?q=" + encodeURIComponent(it.title);
+    var titleEl = el("a","card-title",it.title);
+    titleEl.href = searchUrl;
+    titleEl.target = "_blank";
+    titleEl.rel = "noopener noreferrer";
+    titleEl.title = "点击跳转到" + (it.plat === "douyin" ? "抖音" : it.plat === "xhs" ? "小红书" : "微博") + "搜索页";
+    tw.appendChild(titleEl);
     var meta = el("div","card-meta");
     meta.appendChild(el("span","chip-cat",it.cat));
     meta.appendChild(heatEl);
