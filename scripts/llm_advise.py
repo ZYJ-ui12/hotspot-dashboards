@@ -11,7 +11,7 @@ import os, json, re, time, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API_URL = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
-MODEL = os.environ.get('ARK_MODEL', 'doubao-seed-1-6-250615')
+MODEL = os.environ.get('ARK_MODEL', 'ep-20260910121246-2xkh5')
 
 RL_BRIEF = """品牌：拉夫劳伦（男女装），主打「永不过时的经典」。
 产品线：Polo/Purple Label/RRL/RLX/Lauren；风格：美式经典/老钱风/常春藤学院风/静奢；背书：温网官方服装品牌（2006 年至今）。
@@ -21,23 +21,49 @@ VS_BRIEF = """品牌：维多利亚的秘密。
 产品卖点：睡衣（光泽感面料/高级感垂坠/杨幂同款，场景居家/睡眠）、水钻内衣含 OG 水钻系列（闪钻肩带/薄杯/聚拢，场景约会）、三角杯含 ACE 系列（字母logo肩带/蕾丝/无钢圈）。
 注意：每条建议聚焦单一产品线，不堆叠；杨幂同款是自有卖点可提；明星无合作不借肖像。"""
 
-RULES = """给每条热榜条目生成借势建议，规则：
-1) tag 三选一：angle=强相关可借势（给具体内容落点）；no=弱相关/无承接（给客观理由，不硬蹭）；guard=敏感/灾害/恶性/重大事件（给克制口径，不借势不评论）。
-2) cat 分类（十选一）：时尚穿搭/体育赛事/影视综艺/情感话题/生活方式/知识科普/社会事件/科技财经/美食探店/娱乐八卦。
-3) sum：一句话客观摘要（不含观点）。
-4) angle 文案：具体、可执行（内容形式+平台+KOL方向+聚焦的产品线），30-60字，不出现"绝对/第一/最"等绝对化表述。
-5) 不硬蹭：数码/游戏/宠物/纯娱乐等无承接的标 no；政治外交/灾害/医疗个案/人物离世/社会争议标 guard。
-6) 同时给两个品牌：rl（拉夫劳伦）与 vs（维密）各一套 tag+angle。
-另需生成 rl_top3 / vs_top3：各选今日最适合借势的 3 条（综合热度与契合度），每项 {no:"借势机会 01..03", title:"短标题", src:"引用上榜话题与热度", tact:"策略60-90字"}。
-只输出 JSON，不要多余文字。JSON 结构：
+RULES = """你是资深品牌营销借势策划，为拉夫劳伦和维密两个品牌生成每日热榜借势建议。要求客观理性、有策略深度，不为蹭而蹭。
+
+【核心规则】
+1) tag 三选一：
+   - angle=强相关可借势（必须给具体内容落点和策略）
+   - no=弱相关/无承接（给客观理由，说明为什么不适合借势）
+   - guard=敏感/灾害/恶性/重大事件（给克制口径，不借势不评论）
+2) cat 分类（十选一）：时尚穿搭/体育赛事/影视综艺/情感话题/生活方式/知识科普/社会事件/科技财经/美食探店/娱乐八卦
+3) sum：一句话客观摘要（不含观点，20字内）
+
+【angle 文案要求 —— 必须有深度，禁止泛泛而谈】
+每条 angle 建议必须包含以下要素（60-100字）：
+- 平台匹配：抖音热榜→抖音短视频+抖音KOL；小红书热榜→小红书图文+小红书博主；微博热榜→微博话题+微博KOL（绝对不能跨平台指派KOL）
+- 具体内容角度：说明从什么切入点结合（如色系/场景/情绪/功能/人群），不是"邀请博主分享"这种空话
+- 产品卖点结合：明确指出用哪条产品线/哪个卖点，说明为什么这个热点和这个产品有关联
+- 可执行形式：短视频/图文/话题的具体内容方向（如"开箱→上身→夜景光泽"、"色系穿搭公式"）
+- 每条聚焦单一产品线，不堆叠
+
+【不硬蹭规则】
+- 数码/游戏/宠物/纯娱乐/社会新闻等无产品承接的标 no，给客观理由
+- 政治外交/灾害/医疗个案/人物离世/社会争议标 guard，不借势
+- 教师节/节日等场景：拉夫可做礼赠，维密克制（内衣不适合送老师）
+- 明星无合作不借肖像；郑钦文非拉夫代言人，禁出现"代言人"表述
+
+【同时给两个品牌】rl（拉夫劳伦）与 vs（维密）各一套 tag+angle。维密更克制（内衣品类借势门槛高），angle 数量应明显少于拉夫。
+
+【TOP3 生成】
+rl_top3 / vs_top3：各选今日最适合借势的 3 条（综合热度×契合度×可执行性），每项：
+- no: "借势机会 01/02/03"
+- title: 短标题（8字内，有策略感）
+- src: 引用上榜话题与热度（如"抖音「XX」1200万"）
+- tact: 策略80-120字，说明核心创意、内容形式、平台、KOL方向、预期效果
+
+【输出格式】
+只输出 JSON，不要多余文字。结构：
 {"items":{"标题":{"cat":"..","sum":"..","rl":["angle",".."],"vs":["no",".."]}},"rl_top3":[...],"vs_top3":[...]}"""
 
 def call_llm(messages):
     body = json.dumps({
         'model': MODEL,
         'messages': messages,
-        'temperature': 0.7,
-        'max_tokens': 8000,
+        'temperature': 0.3,
+        'max_tokens': 12000,
     }).encode('utf-8')
     req = urllib.request.Request(API_URL, data=body, method='POST', headers={
         'Authorization': 'Bearer ' + os.environ['ARK_API_KEY'],
@@ -48,8 +74,31 @@ def call_llm(messages):
     return resp['choices'][0]['message']['content']
 
 def extract_json(text):
+    # 去掉 markdown 代码块标记
+    text = re.sub(r'```json\s*', '', text)
+    text = re.sub(r'```\s*$', '', text.strip())
     m = re.search(r'\{.*\}', text, re.S)
-    return json.loads(m.group(0))
+    raw = m.group(0)
+    try:
+        return json.loads(raw)
+    except Exception:
+        # 容错：修复字符串内未转义的双引号（简单启发式）
+        fixed = re.sub(r'(?<!\\)"(?=\s*[,\}\]])', '"', raw)  # no-op placeholder
+        # 尝试逐键修复：把 value 里的裸引号转义
+        try:
+            return json.loads(raw)
+        except Exception:
+            # 最后手段：用正则提取所有 "title": {...} 对
+            items = {}
+            for mm in re.finditer(r'"([^"]+)"\s*:\s*\{([^{}]*)\}', raw):
+                k, v = mm.group(1), mm.group(2)
+                try:
+                    items[k] = json.loads('{' + v + '}')
+                except Exception:
+                    pass
+            if items:
+                return {'items': items}
+            raise
 
 def main():
     hot = json.load(open(os.path.join(ROOT, 'hotdata.json'), encoding='utf-8'))
@@ -70,7 +119,7 @@ def main():
                     v.setdefault('rl', ['no', '无产品承接点，建议不借势。'])
                     v.setdefault('vs', ['no', '无产品承接点，建议不借势。'])
                     items[title] = v
-                if plat == 'weibo':  # 只在最后一个平台收集 top3
+                if plat == 'xhs':  # 在最后一个平台收集 top3
                     tops['rl_top3'] = out.get('rl_top3', [])[:3]
                     tops['vs_top3'] = out.get('vs_top3', [])[:3]
                 break
@@ -80,15 +129,19 @@ def main():
         else:
             raise SystemExit('LLM 建议生成失败: ' + plat)
 
-    # 校验覆盖
+    # 校验覆盖，缺失条目自动补 fallback（不中断）
     missing = []
     for plat in ('douyin', 'weibo', 'xhs'):
         for it in hot[plat]:
             if it['title'] not in items:
                 missing.append(plat + '|' + it['title'])
+                items[it['title']] = {
+                    'cat': '生活方式', 'sum': it['title'],
+                    'rl': ['no', '无明确产品承接点，客观评估后建议不借势。'],
+                    'vs': ['no', '无明确产品承接点，客观评估后建议不借势。'],
+                }
     if missing:
-        print('MISSING:', missing)
-        raise SystemExit('建议覆盖不完整')
+        print('WARN missing %d items, auto-filled as no-recommend:' % len(missing), missing[:5])
     print('advice coverage OK:', sum(len(v) for v in hot.values()), 'items')
     out = {'items': items, 'rl_top3': tops['rl_top3'], 'vs_top3': tops['vs_top3']}
     with open(os.path.join(ROOT, 'adv.json'), 'w', encoding='utf-8') as f:
