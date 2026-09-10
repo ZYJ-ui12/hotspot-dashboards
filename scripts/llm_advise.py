@@ -32,11 +32,12 @@ RULES = """你是资深品牌营销借势策划，为拉夫劳伦和维密两个
 3) sum：一句话客观摘要（不含观点，20字内）
 
 【angle 文案要求 —— 必须有深度，禁止泛泛而谈】
-每条 angle 建议必须包含以下要素（60-100字）：
-- 平台匹配：抖音热榜→抖音短视频+抖音KOL；小红书热榜→小红书图文+小红书博主；微博热榜→微博话题+微博KOL（绝对不能跨平台指派KOL）
-- 具体内容角度：说明从什么切入点结合（如色系/场景/情绪/功能/人群），不是"邀请博主分享"这种空话
-- 产品卖点结合：明确指出用哪条产品线/哪个卖点，说明为什么这个热点和这个产品有关联
-- 可执行形式：短视频/图文/话题的具体内容方向（如"开箱→上身→夜景光泽"、"色系穿搭公式"）
+每条 angle 建议必须包含以下要素（60-100字），直接写策略，不要写"平台匹配XX"这种元信息前缀：
+- 内容形式：根据当前平台选择——抖音=短视频，小红书=图文笔记，微博=话题+图文（绝对不能跨平台）
+- KOL方向：根据当前平台选择——抖音=抖音XX垂类博主，小红书=小红书XX博主，微博=微博XXKOL
+- 具体切入角度：说明从什么点结合（色系/场景/情绪/功能/人群/节日），不是"邀请博主分享"这种空话
+- 产品卖点结合：明确用哪条产品线/哪个卖点，说明为什么这个热点和这个产品有关联
+- 可执行内容方向：如"可可系老钱风穿搭公式"、"开箱→上身→夜景光泽"、"色系穿搭合集"
 - 每条聚焦单一产品线，不堆叠
 
 【不硬蹭规则】
@@ -103,15 +104,21 @@ def extract_json(text):
 def main():
     hot = json.load(open(os.path.join(ROOT, 'hotdata.json'), encoding='utf-8'))
     items, tops = {}, {'rl_top3': [], 'vs_top3': []}
+    plat_meta = {
+        'douyin': ('抖音', '抖音短视频', '抖音垂类博主'),
+        'weibo': ('微博', '微博话题+图文', '微博KOL'),
+        'xhs': ('小红书', '小红书图文笔记', '小红书博主'),
+    }
     for plat in ('douyin', 'weibo', 'xhs'):
+        pname, pform, pkol = plat_meta[plat]
         rows = hot[plat]
-        prompt = RULES + '\n\n【' + plat + ' 热榜 ' + str(len(rows)) + ' 条】\n'
+        prompt = RULES + '\n\n【' + pname + '热榜 ' + str(len(rows)) + ' 条】以下所有条目均来自' + pname + '平台，借势建议必须使用' + pform + '形式和' + pkol + '，绝对不能跨平台。\n'
         for it in rows:
             prompt += '%d. %s（热度 %s）\n' % (it['rank'], it['title'], it['hot'])
         for attempt in range(3):
             try:
                 out = extract_json(call_llm([
-                    {'role': 'system', 'content': '你是资深品牌营销借势策划，客观理性，不为蹭而蹭。'},
+                    {'role': 'system', 'content': '你是资深品牌营销借势策划，客观理性，不为蹭而蹭。当前处理的是' + pname + '热榜，所有建议必须用' + pform + '和' + pkol + '。'},
                     {'role': 'user', 'content': '【拉夫劳伦】' + RL_BRIEF + '\n【维密】' + VS_BRIEF + '\n\n' + prompt},
                 ]))
                 for title, v in out['items'].items():
