@@ -50,6 +50,24 @@ def build(brand, meta):
     max_heat = max(all_heats) if all_heats else 1
     min_heat = min(all_heats) if all_heats else 0
 
+    # 读取历史数据用于生命周期追踪
+    history = {}
+    hist_dir = os.path.join(root, 'history')
+    if os.path.isdir(hist_dir):
+        for fname in sorted(os.listdir(hist_dir)):
+            if fname.endswith('.json'):
+                try:
+                    d = json.load(open(os.path.join(hist_dir, fname), encoding='utf-8'))
+                    date_key = fname.replace('.json', '')
+                    for plat_key in ('douyin', 'weibo', 'xhs'):
+                        for item in d.get(plat_key, []):
+                            title = item.get('title', '')
+                            if title not in history:
+                                history[title] = []
+                            history[title].append({'date': date_key, 'heat': item.get('hot', 0), 'rank': item.get('rank', 0)})
+                except Exception:
+                    pass
+
     def calc_priority(heat_str, tag):
         # 热度归一化 0-50
         try:
@@ -59,14 +77,29 @@ def build(brand, meta):
             heat_score = 25
         # 契合度 0-50
         fit_score = {'angle': 50, 'no': 10, 'guard': 5}.get(tag, 15)
-        return round(heat_score + fit_score)
+        return round(heat_score), round(fit_score), round(heat_score + fit_score)
 
     for plat in ('douyin', 'weibo', 'xhs'):
         rows = []
         for it in hot[plat]:
             a = adv[it['title']]
-            tag, angle = a['rl'] if brand == 'rl' else a['vs']
-            priority = calc_priority(it['hot'], tag)
+            brand_data = a['rl'] if brand == 'rl' else a['vs']
+            tag, angle = brand_data[0], brand_data[1]
+            content_tpl = brand_data[2] if len(brand_data) > 2 and isinstance(brand_data[2], dict) else None
+            heat_score, fit_score, priority = calc_priority(it['hot'], tag)
+            # 生命周期
+            life_days = 1
+            heat_trend = []
+            if it['title'] in history:
+                hist = history[it['title']]
+                life_days = len(hist) + 1
+                heat_trend = [h.get('heat', 0) for h in hist]
+            # 当前热度加入趋势
+            try:
+                cur_heat = float(str(it['hot']).replace('万', '0000').replace('亿', '00000000'))
+                heat_trend.append(cur_heat)
+            except (ValueError, TypeError):
+                pass
             rows.append({
                 'rank': it['rank'],
                 'title': it['title'],
@@ -75,7 +108,12 @@ def build(brand, meta):
                 'sum': a['sum'],
                 'tag': tag,
                 'angle': angle,
+                'content_template': content_tpl,
                 'priority': priority,
+                'heat_score': heat_score,
+                'fit_score': fit_score,
+                'life_days': life_days,
+                'heat_trend': heat_trend[-7:] if len(heat_trend) > 7 else heat_trend,
             })
         rows.sort(key=lambda x: x['rank'])
         data[plat] = rows
@@ -303,6 +341,70 @@ VS_CSS = r'''
   .copy-btn:hover{border-color:var(--rose);color:var(--rose);}
   .copy-btn.copied{background:var(--rose);color:#fff;border-color:var(--rose);}
 
+  /* ===== 内容模板展开 & 优先级明细 & 生命周期 ===== */
+  .expand-btn{
+    padding:4px 12px;border:1px solid var(--line);border-radius:999px;
+    background:transparent;color:var(--sub);font-size:11px;cursor:pointer;
+    transition:all .25s;flex-shrink:0;align-self:center;
+  }
+  .expand-btn:hover{border-color:var(--rose);color:var(--rose);}
+  .card.expanded .expand-btn{border-color:var(--rose);color:var(--rose);background:rgba(205,78,67,.06);}
+  .life-badge{
+    font-size:10px;padding:2px 7px;border-radius:999px;
+    background:rgba(16,185,129,.1);color:#059669;font-weight:500;
+  }
+  .pri-bar{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:8px 0;margin-top:-4px;
+  }
+  .pri-bar-item{display:flex;align-items:center;gap:6px;}
+  .pri-bar-label{font-size:10px;color:var(--sub);width:24px;flex-shrink:0;}
+  .pri-bar-track{width:50px;height:5px;background:rgba(0,0,0,.06);border-radius:999px;overflow:hidden;}
+  .pri-bar-fill{height:100%;border-radius:999px;transition:width .5s ease;}
+  .heat-fill{background:linear-gradient(90deg,#f59e0b,#ef4444);}
+  .fit-fill{background:linear-gradient(90deg,var(--rose),var(--rose-deep));}
+  .pri-bar-val{font-size:10px;color:var(--sub);font-weight:600;width:18px;}
+  .pri-trend{display:flex;align-items:center;gap:6px;margin-left:auto;}
+  .spark{opacity:.7;}
+  .trend-label{font-size:10px;color:var(--sub);}
+  .card-detail{
+    max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease,margin .4s ease;
+    padding:0 16px;margin-top:0;border-top:1px solid transparent;
+  }
+  .card-detail.open{
+    max-height:2000px;padding:16px;margin-top:8px;border-top-color:var(--line);
+    background:rgba(205,78,67,.02);
+  }
+  .detail-section{margin-bottom:14px;}
+  .detail-section:last-child{margin-bottom:0;}
+  .detail-title{
+    font-size:11px;font-weight:600;color:var(--rose-deep);
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .detail-title::before{content:"";width:3px;height:12px;background:var(--rose);border-radius:2px;}
+  .detail-text{font-size:12.5px;line-height:1.7;color:var(--text);}
+  .detail-text.marketing{background:rgba(205,78,67,.05);padding:10px 12px;border-radius:8px;border-left:3px solid var(--rose);}
+  .detail-text.distribution{background:rgba(16,185,129,.05);padding:10px 12px;border-radius:8px;border-left:3px solid #10b981;}
+  .detail-text.platform{background:rgba(59,130,246,.05);padding:10px 12px;border-radius:8px;border-left:3px solid #3b82f6;}
+  .detail-titles{display:flex;flex-direction:column;gap:6px;}
+  .detail-title-item{
+    display:flex;align-items:flex-start;gap:8px;
+    font-size:12.5px;line-height:1.6;padding:8px 10px;
+    background:var(--bg);border-radius:8px;border:1px solid var(--line);
+  }
+  .title-num{
+    flex-shrink:0;width:20px;height:20px;border-radius:50%;
+    background:var(--rose);color:#fff;font-size:10px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .detail-tags{display:flex;flex-wrap:wrap;gap:6px;}
+  .detail-tag{
+    font-size:11px;padding:3px 10px;border-radius:999px;
+    background:rgba(205,78,67,.08);color:var(--rose-deep);
+    border:1px solid rgba(205,78,67,.15);
+  }
+
   @media (max-width:520px){
     .brand-en{font-size:21px;letter-spacing:4px;}
     .tagline{font-size:15px;}
@@ -481,6 +583,18 @@ TPL = '''<!DOCTYPE html>
     }});
   }}
 
+  function sparkline(data, w, h){{
+    if(!data || data.length < 2) return "";
+    var max = Math.max.apply(null, data), min = Math.min.apply(null, data);
+    var range = max - min || 1;
+    var pts = data.map(function(v, i){{
+      var x = (i / (data.length - 1)) * (w - 4) + 2;
+      var y = h - 2 - ((v - min) / range) * (h - 4);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    }}).join(" ");
+    return '<svg class="spark" width="' + w + '" height="' + h + '"><polyline points="' + pts + '" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }}
+
   function cardHTML(it){{
     var rank = (it.rank < 10 ? "0" : "") + it.rank;
     var heatEl = it.heat ? el("span","heat",it.heat) : el("span","heat na","热榜");
@@ -490,7 +604,8 @@ TPL = '''<!DOCTYPE html>
     var priCls = "pri";
     if(it.priority >= 80) priCls += " pri-high";
     else if(it.priority >= 60) priCls += " pri-mid";
-    var card = el("article","card");
+    var hasTpl = it.content_template && it.tag === "angle";
+    var card = el("article","card" + (hasTpl ? " expandable" : ""));
     var head = el("div","card-head");
     head.appendChild(el("span","rank",rank));
     var tw = el("div");
@@ -501,16 +616,37 @@ TPL = '''<!DOCTYPE html>
     meta.appendChild(el("span","chip-cat",it.cat));
     meta.appendChild(heatEl);
     meta.appendChild(el("span",priCls,"优先级 " + it.priority));
+    if(it.life_days > 1) meta.appendChild(el("span","life-badge","已上榜" + it.life_days + "天"));
     tw.appendChild(meta);
     head.appendChild(tw);
+    if(hasTpl){{
+      var expBtn = el("button","expand-btn","展开");
+      expBtn.onclick = function(e){{
+        e.stopPropagation();
+        var detail = card.querySelector(".card-detail");
+        var isOpen = detail.classList.contains("open");
+        detail.classList.toggle("open");
+        expBtn.textContent = isOpen ? "展开" : "收起";
+        card.classList.toggle("expanded");
+      }};
+      head.appendChild(expBtn);
+    }}
     card.appendChild(head);
     card.appendChild(el("p","sum",it.sum));
+    // 优先级明细条
+    var priBar = el("div","pri-bar");
+    priBar.innerHTML = '<div class="pri-bar-item"><span class="pri-bar-label">热度</span><div class="pri-bar-track"><div class="pri-bar-fill heat-fill" style="width:' + it.heat_score*2 + '%"></div></div><span class="pri-bar-val">' + it.heat_score + '</span></div>' +
+      '<div class="pri-bar-item"><span class="pri-bar-label">契合</span><div class="pri-bar-track"><div class="pri-bar-fill fit-fill" style="width:' + it.fit_score*2 + '%"></div></div><span class="pri-bar-val">' + it.fit_score + '</span></div>';
+    if(it.heat_trend && it.heat_trend.length >= 2){{
+      priBar.innerHTML += '<div class="pri-trend">' + sparkline(it.heat_trend, 80, 24) + '<span class="trend-label">热度趋势</span></div>';
+    }}
+    card.appendChild(priBar);
     var angleBox = el("div",cls);
     angleBox.innerHTML = "<b>" + label + "</b>　" + it.angle;
     var copyBtn = el("button","copy-btn","复制");
     copyBtn.onclick = function(e){{
       e.stopPropagation();
-      var text = it.title + "\\n" + label + "：" + it.angle + "\\n优先级：" + it.priority + " | 热度：" + it.heat + " | 分类：" + it.cat;
+      var text = it.title + "\\n" + label + "：" + it.angle + "\\n优先级：" + it.priority + "（热度" + it.heat_score + "+契合" + it.fit_score + "）| 热度：" + it.heat + " | 分类：" + it.cat;
       navigator.clipboard.writeText(text).then(function(){{
         copyBtn.textContent = "已复制";
         copyBtn.classList.add("copied");
@@ -519,6 +655,21 @@ TPL = '''<!DOCTYPE html>
     }};
     angleBox.appendChild(copyBtn);
     card.appendChild(angleBox);
+    // 展开区域：内容模板
+    if(hasTpl){{
+      var tpl = it.content_template;
+      var detail = el("div","card-detail");
+      var html = '<div class="detail-section"><div class="detail-title">内容标题建议</div><div class="detail-titles">';
+      (tpl.titles || []).forEach(function(t, i){{ html += '<div class="detail-title-item"><span class="title-num">' + (i+1) + '</span>' + t + '</div>'; }});
+      html += '</div></div>';
+      if(tpl.copy_direction) html += '<div class="detail-section"><div class="detail-title">文案方向</div><div class="detail-text">' + tpl.copy_direction + '</div></div>';
+      if(tpl.tags && tpl.tags.length) html += '<div class="detail-section"><div class="detail-title">推荐标签</div><div class="detail-tags">' + tpl.tags.map(function(t){{ return '<span class="detail-tag">' + t + '</span>'; }}).join("") + '</div></div>';
+      if(tpl.distribution) html += '<div class="detail-section"><div class="detail-title">内容分发策略</div><div class="detail-text distribution">' + tpl.distribution + '</div></div>';
+      if(tpl.marketing_analysis) html += '<div class="detail-section"><div class="detail-title">营销分析</div><div class="detail-text marketing">' + tpl.marketing_analysis + '</div></div>';
+      if(tpl.platform_fit) html += '<div class="detail-section"><div class="detail-title">平台契合度</div><div class="detail-text platform">' + tpl.platform_fit + '</div></div>';
+      detail.innerHTML = html;
+      card.appendChild(detail);
+    }}
     return card;
   }}
 

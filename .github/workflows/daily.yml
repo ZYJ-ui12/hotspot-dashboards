@@ -40,6 +40,12 @@ jobs:
       - name: 构建双品牌 HTML
         run: python scripts/build.py
 
+      - name: 保存历史数据快照（用于热点生命周期追踪）
+        run: |
+          mkdir -p history
+          cp hotdata.json history/$(date +%F).json
+          echo "已保存历史快照: history/$(date +%F).json"
+
       - name: 提交并推送
         run: |
           git config user.name "hotspot-bot"
